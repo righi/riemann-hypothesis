@@ -99,9 +99,6 @@ abbrev GalLK : Type := GK p K ⧸ subG p K L
 
 
 variable {p K L} in
-variable {p K L} in
-variable {p K L} in
-variable {p K L} in
 theorem subG_normal_of_stable (h : ∀ (σ : GK p K), ∀ x ∈ L, σ x ∈ L) : (subG p K L).Normal := by
   refine ⟨fun n hn g x hx => ?_⟩
   show g (n (g⁻¹ x)) = x
@@ -181,11 +178,8 @@ scoped instance [(subG p K L).Normal] : DiscreteTopology (layer p K L).V :=
 scoped instance [(subG p K L).Normal] : DiscreteTopology (layerU p K L).V :=
   (InflationRestrictionInvariants.invariants_isInvRep (ubarT p K) (subG p K L)).2.1.discreteTopology
 
-variable {p K} in
 abbrev Br : Type := (kbarT p K).H 2
 
-variable {p K L} in
-variable {p K L} in
 end
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField

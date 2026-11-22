@@ -332,7 +332,6 @@ def cycN : (L ≃ₐ[K] L) →* (ZMod n)ˣ :=
     (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L)
 
 
-variable {K L n} in
 end Cyc
 
 section Local

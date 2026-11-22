@@ -15,7 +15,6 @@ noncomputable section
 
 variable (p : ℕ) [Fact p.Prime] (K L : IntermediateField ℚ_[p] (PadicAlgCl p))
 
-variable {p K L} in
 end
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField

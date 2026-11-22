@@ -14,6 +14,4 @@ variable (K L : Type*) [NontriviallyNormedField K] [CompleteSpace K] [IsUltramet
 
 variable {K L}
 
-variable (K L) in
-variable (K L) in
 end ReciprocityTheory.DiscreteGroups.LocalClassField.UnitsFilt

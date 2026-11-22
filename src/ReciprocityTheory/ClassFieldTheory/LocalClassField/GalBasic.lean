@@ -61,7 +61,6 @@ theorem subG_le_iff {L' : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : K ≤ L
     rw [← subG_sup p K L']
     exact subG_anti hle
 
-variable (p K L) in
 theorem isOpen_subG (hL : FiniteDimensional ℚ_[p] L) : IsOpen (subG p K L : Set (GK p K)) := by
   have hint : Algebra.IsIntegral K (PadicAlgCl p) := Algebra.IsIntegral.tower_top (R := ℚ_[p])
   let b := Module.finBasis ℚ_[p] L

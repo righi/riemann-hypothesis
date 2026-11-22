@@ -24,7 +24,6 @@ variable (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
 
 variable {p n}
 
-variable (p n) in
 end
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField.Kummer

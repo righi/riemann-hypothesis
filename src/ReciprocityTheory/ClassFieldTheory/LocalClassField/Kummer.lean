@@ -15,8 +15,6 @@ noncomputable section
 
 variable (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (n : ℕ) [NeZero n]
 
-variable {p n} in
-variable {p n} in
 end
 
 end Kummer

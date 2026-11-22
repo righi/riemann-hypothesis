@@ -11,7 +11,6 @@ open Finset
 
 variable {R : Type*} [Field R] {G : Type*} [Group G] [Fintype G] [MulSemiringAction G R]
 
-variable (G) in
 namespace Filt
 
 variable {I : ℕ → AddSubgroup R} {e : R →+ R} (h : Filt G I e)

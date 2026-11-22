@@ -16,25 +16,4 @@ namespace GlobalTheory.NormBall
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
 
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-open MeasureTheory Matrix in
-open ValuativeRel in
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 end GlobalTheory.NormBall

@@ -21,5 +21,4 @@ variable (p : ℕ) [Fact p.Prime] (K L : IntermediateField ℚ_[p] (PadicAlgCl p
 
 variable {p K L}
 
-variable (p K L) in
 end ReciprocityTheory.DiscreteGroups.LocalClassField
