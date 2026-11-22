@@ -157,10 +157,6 @@ theorem qK_eq_pow_fK (hK : FiniteDimensional ℚ_[p] K) : qK p K = p ^ fK p K :=
   obtain ⟨f, -, hf⟩ := qK_eq_pow p K hK
   rw [fK, hf, Nat.log_pow (Fact.out : p.Prime).one_lt]
 
-theorem fK_pos (hK : FiniteDimensional ℚ_[p] K) : 0 < fK p K := by
-  obtain ⟨f, hf0, hf⟩ := qK_eq_pow p K hK
-  rwa [fK, hf, Nat.log_pow (Fact.out : p.Prime).one_lt]
-
 theorem eK_mul_fK (hK : FiniteDimensional ℚ_[p] K) : eK p K * fK p K = Module.finrank ℚ_[p] K := by
   have h := qK_pow_eK p K hK
   rw [qK_eq_pow_fK p K hK, ← pow_mul] at h

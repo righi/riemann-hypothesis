@@ -166,39 +166,6 @@ universe u
 
 variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
-theorem model_comparison_degree_zero_bijective [CompactSpace G] (M : TRep R G) [DiscreteTopology M.V] {s : G}
-    (hc : ∀ a b : G, a * b = b * a) (hs : Dense (Subgroup.zpowers s : Set G))
-    (hidx : ∀ k : ℕ, 0 < k → ∃ W : Subgroup G, IsOpen (W : Set G) ∧ W.index = k)
-    (htor : ∀ m : M.V, ∃ k : ℕ, 0 < k ∧ k • m = 0) :
-    ∃ e : H1 M.rho ≃ₗ[R] M.V ⧸ LinearMap.range (M.rho s - LinearMap.id),
-      ∀ c : Z1 M.rho, e (Submodule.Quotient.mk c) = Submodule.Quotient.mk (c.1 s) := by
-  set P := LinearMap.range (M.rho s - LinearMap.id)
-  let f : Z1 M.rho →ₗ[R] M.V ⧸ P := P.mkQ ∘ₗ ((LinearMap.proj s) ∘ₗ (Z1 M.rho).subtype)
-  have hf : ∀ c : Z1 M.rho, f c = Submodule.Quotient.mk (c.1 s) := fun c => rfl
-  have hker : (B1 M.rho).comap (Z1 M.rho).subtype ≤ LinearMap.ker f := by
-    intro c hc'
-    obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 hc'
-    rw [LinearMap.mem_ker, hf, Submodule.Quotient.mk_eq_zero]
-    exact ⟨m, by simpa using (hm s).symm⟩
-  let φ := ((B1 M.rho).comap (Z1 M.rho).subtype).liftQ f hker
-  have hφ : ∀ c : Z1 M.rho, φ (Submodule.Quotient.mk c) = Submodule.Quotient.mk (c.1 s) :=
-    fun c => rfl
-  have hinj : Injective φ := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro x hx
-    obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    rw [hφ, Submodule.Quotient.mk_eq_zero] at hx
-    obtain ⟨m, hm⟩ := hx
-    rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype, mem_coboundaries1]
-    refine ⟨m, cocycle_eq_of_apply M hs c.1 c.2 m ?_⟩
-    rw [← hm]; simp
-  have hsurj : Surjective φ := by
-    intro y
-    obtain ⟨m, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-    obtain ⟨c, hcZ, hcs⟩ := exists_cocycle M hc hs hidx m (htor m)
-    exact ⟨Submodule.Quotient.mk ⟨c, hcZ⟩, by rw [hφ]; simp [hcs]⟩
-  exact ⟨LinearEquiv.ofBijective φ ⟨hinj, hsurj⟩, fun c => hφ c⟩
-
 end ProcyclicCohomology
 
 end ReciprocityTheory.Coh

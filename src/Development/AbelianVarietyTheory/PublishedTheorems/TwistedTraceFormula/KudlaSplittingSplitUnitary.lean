@@ -73,10 +73,6 @@ def levi (hc : ∀ z, c (c z) = z) (a : GL ν E) : UG c (stdJ ν E) :=
     rw [← transpose_mul, ← Matrix.map_mul (f := c), Units.mul_inv,
       Matrix.map_one _ (map_zero c) (map_one c), transpose_one]⟩
 
-theorem levi_val (hc : ∀ z, c (c z) = z) (a : GL ν E) :
-    ((levi c hc a : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E) =
-      fromBlocks (a : Matrix ν ν E) 0 0 (((a⁻¹ : GL ν E) : Matrix ν ν E).map c)ᵀ := rfl
-
 def form (Q : Matrix α α E) (w w' : Matrix α (ν ⊕ ν) E) : F :=
   2⁻¹ * Algebra.trace F E (hTens c Q (stdJ ν E) w w')
 
@@ -94,15 +90,6 @@ theorem hTens_eq (Q : Matrix α α E) (w w' : Matrix α (ν ⊕ ν) E) :
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => by ring
 
-
-omit [DecidableEq α] in
-theorem form_mul (Q : Matrix α α E) (g : UG c (stdJ ν E)) (w w' : Matrix α (ν ⊕ ν) E) :
-    form c Q (w * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) (w' * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) =
-      form c Q w w' := by
-  have h := (mem_UG_iff c _).mp g.2
-  rw [form, form, hTens_eq, hTens_eq, Matrix.map_mul (f := c), transpose_mul]
-  conv_rhs => rw [← h]
-  simp only [Matrix.mul_assoc]
 
 omit [DecidableEq α] in
 theorem form_add_left (Q : Matrix α α E) (w₁ w₂ w' : Matrix α (ν ⊕ ν) E) :
@@ -127,16 +114,6 @@ theorem form_swap (hc : ∀ z, c (c z) = z) {Q : Matrix α α E} (hQ : IsHerm c 
   have ht : ∀ z, Algebra.trace F E (c z) = Algebra.trace F E z := fun z =>
     Algebra.trace_eq_of_algEquiv (AlgEquiv.ofAlgHom c c (AlgHom.ext hc) (AlgHom.ext hc)) z
   rw [form, form, h, map_neg, ht, mul_neg]
-
-
-omit [DecidableEq α] in
-theorem form_left_left (Q : Matrix α α E) (x x' : Matrix α ν E) : form c Q (fromCols x 0) (fromCols x' 0) = 0 := by
-  simp [form, hTens, stdJ, Fintype.sum_sum_type]
-
-
-omit [DecidableEq α] in
-theorem form_right_right (Q : Matrix α α E) (y y' : Matrix α ν E) : form c Q (fromCols 0 y) (fromCols 0 y') = 0 := by
-  simp [form, hTens, stdJ, Fintype.sum_sum_type]
 
 
 end Group

@@ -130,19 +130,6 @@ theorem exists_valuationSubring_comap_eq (T : ValuationSubring K) (χ : K →+* 
   rintro ⟨a, rfl⟩
   exact a.2
 
-def comapToValuationSubring (V' : ValuationSubring K') (χ : K →+* K') : V'.comap χ →+* V' :=
-  (χ.comp (V'.comap χ).subtype).codRestrict V'.toSubring fun a ↦ a.2
-
-instance isLocalHom_comapToValuationSubring (V' : ValuationSubring K') (χ : K →+* K') :
-    IsLocalHom (comapToValuationSubring V' χ) := ⟨fun a ha ↦ by
-  obtain ⟨b, hb⟩ := isUnit_iff_exists_inv.mp ha
-  have hb' : χ a * b = 1 := congrArg Subtype.val hb
-  have ha0 : (a : K) ≠ 0 := fun e ↦ by simp [e] at hb'
-  have hm : (a : K)⁻¹ ∈ V'.comap χ := by
-    rw [ValuationSubring.mem_comap, map_inv₀, ← eq_inv_of_mul_eq_one_right hb']
-    exact b.2
-  exact isUnit_iff_exists_inv.mpr ⟨⟨_, hm⟩, Subtype.ext (mul_inv_cancel₀ ha0)⟩⟩
-
 end Domination
 
 section Graph

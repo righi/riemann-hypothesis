@@ -119,13 +119,6 @@ theorem mul_rep_inv_mem (U : Subgroup G) (x : G) : x * (rep U x)⁻¹ ∈ U :=
 
 def retr (U : Subgroup G) (x : G) : U := ⟨x * (rep U x)⁻¹, mul_rep_inv_mem U x⟩
 
-def corFun (M : TRep R G) (U : Subgroup G) (n : ℕ) (f : (Fin n → U) → M.V) (g : Fin n → G) : M.V :=
-  ∑ᶠ c : Quotient (QuotientGroup.rightRel U), M.rho c.out⁻¹
-    (f fun i => (retr U (c.out * Fin.partialProd g i.castSucc))⁻¹ * retr U (c.out * Fin.partialProd g i.succ))
-
-def IsCor (M : TRep R G) (U : Subgroup G) (cor : Cx.Hom (M.resSub U).coch M.coch) : Prop :=
-  ∀ n f, (cor.f n f).1 = corFun M U n f.1
-
 structure Pairing (M N P : TRep R G) where
   β : M.V →ₗ[R] N.V →ₗ[R] P.V
   cont : Continuous fun x : M.V × N.V => β x.1 x.2
@@ -141,11 +134,6 @@ def IsCup {M N P : TRep R G} (b : Pairing M N P)
   ∀ p q (x : M.coch.X p) (y : N.coch.X q) (hx : M.coch.d p x = 0) (hy : N.coch.d q y = 0),
     ∃ (z : P.coch.X (p + q)) (hz : P.coch.d (p + q) z = 0), z.1 = cupFun b p q x.1 y.1 ∧
       cup p q (M.coch.cls p x hx) (N.coch.cls q y hy) = P.coch.cls (p + q) z hz
-
-def IsCoind (U : Subgroup G) (M : TRep R U) (C : TRep R G) (ev : Pair C M) : Prop :=
-  ev.φ = U.subtype ∧ ∃ j : C.V → C(G, M.V), Topology.IsEmbedding j ∧
-    (∀ c g, j c g = ev.u (C.rho g c)) ∧
-    ∀ f : C(G, M.V), (∀ (x : U) g, f (x * g) = M.rho x (f g)) → f ∈ Set.range j
 
 structure SelData (M : TRep R G) (ι : Type u) where
   D : ι → Type u

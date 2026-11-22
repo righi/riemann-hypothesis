@@ -44,15 +44,6 @@ def LowNatStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group 
   (∀ x, e₀' (P.hom.H 0 x) = P.h0 (e₀ x)) ∧ (∀ x, e₁' (P.hom.H 1 x) = P.h1 (e₁ x)) ∧
   ∀ x, e₂' (P.hom.H 2 x) = P.h2 (e₂ x)
 
-def LowLESStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (A B C : TRep R G) (i : Pair A B) (p : Pair B C), admitted i p →
-  ∃ (δ₀ : H0 C.rho →ₗ[R] H1 A.rho) (δ₁ : H1 C.rho →ₗ[R] H2 A.rho),
-    (∀ (c : H0 C.rho) (b : B.V) (a : Z1 A.rho), p.u b = c → (∀ g, i.u (a.1 g) = B.rho g b - b) →
-      δ₀ c = Submodule.Quotient.mk a) ∧
-    (∀ (c : Z1 C.rho) (b : G → B.V) (a : Z2 A.rho), Continuous b → (∀ g, p.u (b g) = c.1 g) →
-      (∀ g, i.u (a.1 g) = d1 B.rho b g) → δ₁ (Submodule.Quotient.mk c) = Submodule.Quotient.mk a) ∧
-    Injective i.h0 ∧ Exact i.h0 p.h0 ∧ Exact p.h0 δ₀ ∧ Exact δ₀ i.h1 ∧ Exact i.h1 p.h1 ∧ Exact p.h1 δ₁ ∧
-    Exact δ₁ i.h2 ∧ Exact i.h2 p.h2 ∧ (Subsingleton (A.H 3) → Surjective p.h2)
-
 def LowResStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M : TRep R G),
   (∀ (N : Subgroup G) [N.Normal] (Q : TRep R (G ⧸ N)) (P : Pair Q M), IsInvRep M N Q P →
     Injective P.h1 ∧ Exact P.h1 (resH1 M.rho N.subtype continuous_subtype_val)) ∧

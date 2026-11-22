@@ -77,10 +77,6 @@ variable (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A]
 def galPts (σ : Ω ≃ₐ[K] Ω) : (ptOver K Ω ⟶ A) →* (ptOver K Ω ⟶ A) :=
   MonoidHom.mk' (fun x => specAut σ ≫ x) fun x y => MonObj.comp_mul _ x y
 
-omit [IsCommMonObj A] in
-theorem galPts_left (σ : Ω ≃ₐ[K] Ω) (x : ptOver K Ω ⟶ A) :
-    (galPts A σ x).left = spMap (σ : Ω →+* Ω) ≫ x.left := rfl
-
 def galTate (l : ℕ) [Fact l.Prime] : (Ω ≃ₐ[K] Ω) →* Module.End ℤ_[l] (Tate l (ptOver K Ω ⟶ A)) where
   toFun σ := Tate.map l (galPts A σ)
   map_one' := LinearMap.ext fun t => Tate.ext fun n => by
@@ -89,10 +85,6 @@ def galTate (l : ℕ) [Fact l.Prime] : (Ω ≃ₐ[K] Ω) →* Module.End ℤ_[l]
   map_mul' σ τ := LinearMap.ext fun t => Tate.ext fun n => by
     change specAut (σ * τ) ≫ t.lev n = specAut σ ≫ specAut τ ≫ t.lev n
     rw [specAut_mul, Category.assoc]
-
-theorem lev_galTate (l : ℕ) [Fact l.Prime] (σ : Ω ≃ₐ[K] Ω) (t : Tate l (ptOver K Ω ⟶ A)) (n : ℕ) :
-    (galTate A l σ t).lev n = galPts A σ (t.lev n) := rfl
-
 
 variable (K) in
 def inertia (V : ValuationSubring Ω) : Subgroup (Ω ≃ₐ[K] Ω) :=
@@ -164,16 +156,6 @@ theorem mem_inertia_iff {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] (V : V
   · rintro ⟨h1, h2⟩
     exact ⟨⟨σ, h1⟩, (key _).2 h2, rfl⟩
 
-theorem exists_isAbove (R K Ω : Type) [CommRing R] [IsDomain R] [ValuationRing R] [Field K] [Algebra R K]
-    [IsFractionRing R K] [Field Ω] [Algebra K Ω] : ∃ V : ValuationSubring Ω, IsAbove R K V.toSubring := by
-  obtain ⟨V, -, -, -, h⟩ := exists_valuationSubring_dominating (V := R) (algebraMap K Ω)
-  exact ⟨V, Subring.ext h⟩
-
-theorem tateUnramified_of_torsionUnramified {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {A : Over (Sp K)}
-    [GrpObj A] [IsCommMonObj A] {V : ValuationSubring Ω} {l : ℕ} [Fact l.Prime]
-    (h : ∀ n, TorsionUnramified A V (l ^ n)) : TateUnramified A V l :=
-  fun σ hσ => LinearMap.ext fun t => Tate.ext fun n => h n σ hσ _ (t.lev_pow n)
-
 end AbVarRed
 
 section Consequences
@@ -181,16 +163,6 @@ section Consequences
 variable {R K Ω : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K]
   [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω] {V : ValuationSubring Ω}
   {A : Over (Sp K)} [GrpObj A] [IsCommMonObj A]
-
-theorem NeronOggShafarevichSt.iff_tateUnramified (h : NeronOggShafarevichSt) [PerfectField (ResidueField R)]
-    (hV : IsAbove R K V.toSubring) (hA : IsAbelianScheme A) (l : ℕ) [Fact l.Prime]
-    (hl : (l : ResidueField R) ≠ 0) : HasGoodReduction R K A ↔ TateUnramified A V l := by
-  have t := h R K Ω V hV A hA
-  have t01 : HasGoodReduction R K A ↔ ∀ m : ℕ, (m : ResidueField R) ≠ 0 → TorsionUnramified A V m := t.out 1 2
-  have t03 : HasGoodReduction R K A ↔
-      ∃ (l : ℕ) (_ : Fact l.Prime), (l : ResidueField R) ≠ 0 ∧ TateUnramified A V l := t.out 1 4
-  exact ⟨fun hg => tateUnramified_of_torsionUnramified fun n =>
-    t01.1 hg (l ^ n) (by rw [Nat.cast_pow]; exact pow_ne_zero _ hl), fun ht => t03.2 ⟨l, _, hl, ht⟩⟩
 
 end Consequences
 

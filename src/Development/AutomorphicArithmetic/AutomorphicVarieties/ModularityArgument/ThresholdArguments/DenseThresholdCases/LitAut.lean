@@ -54,7 +54,6 @@ structure LiteratureCMHypothesis : Prop where
   dual : AbelianDualCrystal
   per : PeriodComparison
   gmp : GaussManinPeriods
-  st : SerreTateGoodReductionSt
   cm : EllipticMainTheoremCM
   hj : HilbertClassFieldJ
   dri : SiegelKlingenDeligneRibet

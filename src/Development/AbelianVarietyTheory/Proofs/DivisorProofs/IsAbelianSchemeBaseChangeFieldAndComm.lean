@@ -13,9 +13,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Published.AbVarRed
 
-theorem isAbelianScheme_baseChange_field_and_comm : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A → IsAbelianScheme ((Over.pullback (spMap (algebraMap K L))).obj A) ∧ IsCommMonObj ((Over.pullback (spMap (algebraMap K L))).obj A) := by
-  intro K L _ _ _ A _ _ hA
-  have hB := GlobalTheory.isAbelianScheme_pullback_obj (spMap (algebraMap K L)) A hA
-  exact ⟨hB, hB.comm⟩
-
 end GlobalTheory.Published.AbVarRed

@@ -52,32 +52,11 @@ section Local
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K]
 
-def integersBar : Subalgebra 𝒪[K] (AlgebraicClosure K) :=
-  integralClosure 𝒪[K] (AlgebraicClosure K)
-
-def maxIdealBar : Set (AlgebraicClosure K) :=
-  {y | y ∈ integersBar K ∧ (y = 0 ∨ y⁻¹ ∉ integersBar K)}
-
 def IsUniformiser (π : K) : Prop :=
   ∃ hπ : π ∈ 𝒪[K], Irreducible (⟨π, hπ⟩ : 𝒪[K])
 
-def IsFrobeniusLift (g : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K) : Prop :=
-  ∀ x ∈ integersBar K, g x - x ^ Nat.card 𝓀[K] ∈ maxIdealBar K
-
 def normGroup (L : IntermediateField K (AlgebraicClosure K)) : Subgroup Kˣ :=
   (Units.map (Algebra.norm K : L →* K)).range
-
-def IsLocalArtinMap (Art : Kˣ →* Field.absoluteGaloisGroupAbelianization K) : Prop :=
-  Continuous Art ∧ Function.Injective Art ∧ DenseRange Art ∧
-  (∀ π : Kˣ, IsUniformiser K (π : K) → ∀ g : AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K,
-      toAb K g = Art π →
-      IsFrobeniusLift K g) ∧
-  (∀ (L : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K L),
-      Function.Surjective ((abRestrict K L h).comp Art) ∧
-      ((abRestrict K L h).comp Art).ker = normGroup K L)
-
-def LocalReciprocity [IsNonarchimedeanLocalField K] : Prop :=
-  ∃ Art : Kˣ →* Field.absoluteGaloisGroupAbelianization K, IsLocalArtinMap K Art
 
 end Local
 

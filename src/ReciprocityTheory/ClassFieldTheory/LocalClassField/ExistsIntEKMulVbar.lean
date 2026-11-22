@@ -82,23 +82,6 @@ def vK (x : Kˣ) : ℤ := vOn p K ⟨ofK p K (Additive.ofMul x), ofK_mem p K _�
 
 def Ubar : Submodule ℤ (KbarMult p) := AddSubgroup.toIntSubmodule (vbar p).ker
 
-theorem mem_Ubar_iff (x : KbarMult p) : x ∈ Ubar p ↔ vbar p x = 0 := Iff.rfl
-
-def UK : Subgroup Kˣ where
-  carrier := {x | ‖((x : K) : PadicAlgCl p)‖ = 1}
-  one_mem' := by
-    show ‖(((1 : Kˣ) : K) : PadicAlgCl p)‖ = 1
-    simp
-  mul_mem' := fun {x y} hx hy => by
-    have hx' : ‖((x : K) : PadicAlgCl p)‖ = 1 := hx
-    have hy' : ‖((y : K) : PadicAlgCl p)‖ = 1 := hy
-    show ‖(((x * y : Kˣ) : K) : PadicAlgCl p)‖ = 1
-    rw [Units.val_mul, MulMemClass.coe_mul, norm_mul, hx', hy', one_mul]
-  inv_mem' := fun {x} hx => by
-    have hx' : ‖((x : K) : PadicAlgCl p)‖ = 1 := hx
-    show ‖(((x⁻¹ : Kˣ) : K) : PadicAlgCl p)‖ = 1
-    rw [Units.val_inv_eq_inv_val, IntermediateField.coe_inv, norm_inv, hx', inv_one]
-
 def subG : Subgroup (GK p K) where
   carrier := {σ | ∀ x ∈ L, σ x = x}
   one_mem' := fun _ _ => rfl
@@ -116,42 +99,8 @@ abbrev GalLK : Type := GK p K ⧸ subG p K L
 
 
 variable {p K L} in
-def resGK (h : K ≤ L) : GK p L →* GK p K where
-  toFun σ := { σ.toRingEquiv with commutes' := fun x => σ.commutes ⟨x.1, h x.2⟩ }
-  map_one' := rfl
-  map_mul' _ _ := rfl
-
 variable {p K L} in
-theorem resGK_apply (h : K ≤ L) (σ : GK p L) (x : PadicAlgCl p) : resGK h σ x = σ x := rfl
-
 variable {p K L} in
-theorem resGK_continuous (h : K ≤ L) : Continuous (resGK h) := by
-  have hint : Algebra.IsIntegral L (PadicAlgCl p) := Algebra.IsIntegral.tower_top (R := ℚ_[p])
-  apply continuous_of_continuousAt_one
-  rw [ContinuousAt, map_one]
-  refine Filter.tendsto_def.2 fun s hs => ?_
-  rw [krullTopology_mem_nhds_one_iff] at hs
-  obtain ⟨E, hE, hEs⟩ := hs
-  let b := Module.finBasis K E
-  have hopen : IsOpen (⋂ i, {σ : GK p L | σ (b i : PadicAlgCl p) = b i}) :=
-    isOpen_iInter_of_finite fun i => stabilizer_isOpen_of_isIntegral (K := L) (b i : PadicAlgCl p)
-  refine Filter.mem_of_superset (hopen.mem_nhds (Set.mem_iInter.2 fun i => rfl)) fun σ hσ => hEs ?_
-  rw [SetLike.mem_coe, IntermediateField.mem_fixingSubgroup_iff]
-  intro x hx
-  have hx' : x = ∑ i, b.repr ⟨x, hx⟩ i • (b i : PadicAlgCl p) := by
-    have := congrArg E.val (b.sum_repr ⟨x, hx⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at this
-    exact this.symm
-  rw [hx']
-  show resGK h σ _ = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Algebra.smul_def, map_mul, AlgEquiv.commutes]
-  exact congrArg _ (Set.mem_iInter.1 hσ i)
-
-
 variable {p K L} in
 theorem subG_normal_of_stable (h : ∀ (σ : GK p K), ∀ x ∈ L, σ x ∈ L) : (subG p K L).Normal := by
   refine ⟨fun n hn g x hx => ?_⟩
@@ -189,8 +138,6 @@ theorem Kur_stable (σ : GK p K) (x : PadicAlgCl p) (hx : x ∈ MaximalUnramifie
     iSup_le fun n y hy => (le_iSup (fun n : ℕ => Kn p K (n + 1)) n) (Kn_stable p K (n + 1) σ y hy)
   exact h hx
 
-scoped instance subG_Kn_normal (n : ℕ) : (subG p K (Kn p K n)).Normal := subG_normal_of_stable (Kn_stable p K n)
-
 scoped instance subG_Kur_normal : (subG p K (MaximalUnramifiedExtension p K)).Normal := subG_normal_of_stable (Kur_stable p K)
 
 def IsFrob (σ : GK p K) : Prop := ∀ x : PadicAlgCl p, ‖x‖ ≤ 1 → ‖σ x - x ^ qK p K‖ < 1
@@ -224,18 +171,7 @@ def ubarT : TRep ℤ (GK p K) where
 
 scoped instance : DiscreteTopology (ubarT p K).V := inferInstanceAs (DiscreteTopology (Ubar p))
 
-def ubarIncl : Pair (ubarT p K) (kbarT p K) :=
-  Pair.ofMap (M := ubarT p K) (M' := kbarT p K) (Ubar p).subtype continuous_subtype_val (fun _ _ => rfl)
-
-def mkLin {G G' : Type} [Group G] [TopologicalSpace G] [Group G'] [TopologicalSpace G'] {A : TRep ℤ G}
-    {B : TRep ℤ G'} (f : A.V →+ B.V) : A.V →ₗ[ℤ] B.V where
-  toFun := f
-  map_add' := f.map_add
-  map_smul' n x := by simp
-
 abbrev layer [(subG p K L).Normal] : TRep ℤ (GalLK p K L) := InflationRestrictionInvariants.invQ (kbarT p K) (subG p K L)
-
-abbrev layerInf [(subG p K L).Normal] : Pair (layer p K L) (kbarT p K) := InflationRestrictionInvariants.invP (kbarT p K) (subG p K L)
 
 abbrev layerU [(subG p K L).Normal] : TRep ℤ (GalLK p K L) := InflationRestrictionInvariants.invQ (ubarT p K) (subG p K L)
 
@@ -245,83 +181,11 @@ scoped instance [(subG p K L).Normal] : DiscreteTopology (layer p K L).V :=
 scoped instance [(subG p K L).Normal] : DiscreteTopology (layerU p K L).V :=
   (InflationRestrictionInvariants.invariants_isInvRep (ubarT p K) (subG p K L)).2.1.discreteTopology
 
-def layerUIncl [(subG p K L).Normal] : Pair (layerU p K L) (layer p K L) :=
-  Pair.ofMap (M := layerU p K L) (M' := layer p K L)
-    (mkLin (A := layerU p K L) (B := layer p K L)
-      { toFun := fun x => ⟨(ubarIncl p K).u x.1, fun g => congrArg (ubarIncl p K).u (x.2 g)⟩
-        map_zero' := rfl
-        map_add' := fun _ _ => rfl })
-    continuous_of_discreteTopology
-    (fun g x => by
-      induction g using QuotientGroup.induction_on with
-      | H σ => rfl)
-
-
 variable {p K} in
-def layerInfl {L L' : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : L ≤ L') [(subG p K L).Normal]
-    [(subG p K L').Normal] : Pair (layer p K L) (layer p K L') where
-  φ := QuotientGroup.map (subG p K L') (subG p K L) (MonoidHom.id _) (fun _ hσ x hx => hσ x (h hx))
-  u := mkLin (A := layer p K L) (B := layer p K L')
-    { toFun := fun x => ⟨x.1, fun g => x.2 ⟨g.1, fun y hy => g.2 y (h hy)⟩⟩
-      map_zero' := rfl
-      map_add' := fun _ _ => rfl }
-  φ_cont := (QuotientGroup.isOpenQuotientMap_mk.isQuotientMap.continuous_iff).2 continuous_quot_mk
-  u_cont := continuous_of_discreteTopology
-  equiv g m := by
-    induction g using QuotientGroup.induction_on with
-    | H σ => rfl
-
-
-open Classical in
-def vLayerMap [(subG p K L).Normal] : (layer p K L).V →+ ℤ :=
-  if h : ∃ f : (layer p K L).V →+ ℤ, ∀ x, (f x : ℝ) = eK p L * vbar p x.1 then h.choose else 0
-
-theorem vLayerMap_rho [(subG p K L).Normal] (g : GalLK p K L) (x : (layer p K L).V) :
-    vLayerMap p K L ((layer p K L).rho g x) = vLayerMap p K L x := by
-  induction g using QuotientGroup.induction_on with
-  | H σ =>
-    unfold vLayerMap
-    split_ifs with h
-    · apply Int.cast_injective (α := ℝ)
-      rw [h.choose_spec, h.choose_spec]
-      exact congrArg _ (vbar_kbarRep p K σ x.1)
-    · rfl
-
-def vLayer [(subG p K L).Normal] : Pair (layer p K L) (trivRep (GalLK p K L) ℤ) :=
-  Pair.ofMap (M := layer p K L) (M' := trivRep (GalLK p K L) ℤ)
-    (mkLin (A := layer p K L) (B := trivRep (GalLK p K L) ℤ) (vLayerMap p K L))
-    continuous_of_discreteTopology (fun g x => vLayerMap_rho p K L g x)
-
 abbrev Br : Type := (kbarT p K).H 2
 
-def BrLK [(subG p K L).Normal] : Submodule ℤ (Br p K) := LinearMap.range ((layerInf p K L).hom.H 2)
-
-
 variable {p K L} in
-def resPair (h : K ≤ L) : Pair (kbarT p K) (kbarT p L) where
-  φ := resGK h
-  u := LinearMap.id
-  φ_cont := resGK_continuous h
-  u_cont := continuous_id
-  equiv _ _ := rfl
-
-
 variable {p K L} in
-def BrKer (h : K ≤ L) : Submodule ℤ (Br p K) := LinearMap.ker ((resPair h).hom.H 2)
-
-abbrev urT : TRep ℤ (GalLK p K (MaximalUnramifiedExtension p K)) := layer p K (MaximalUnramifiedExtension p K)
-
-def IsInv (f : (urT p K).H 2 →+ QZ) : Prop :=
-  ∀ (π : (urT p K).V) (t : GalLK p K (MaximalUnramifiedExtension p K) → ℚ) (m : (Fin 2 → GalLK p K (MaximalUnramifiedExtension p K)) → ℤ)
-    (z : (urT p K).coch.X 2) (hz : (urT p K).coch.d 2 z = 0),
-    π.1 ∈ multOf p K → (eK p K : ℝ) * vbar p π.1 = 1 → IsLocallyConstant t →
-    (∀ g, (m g : ℚ) = t (g 0) + t (g 1) - t (g 0 * g 1)) → (∀ g, z.1 g = m g • π) →
-    f ((urT p K).coch.cls 2 z hz) = QuotientAddGroup.mk (t (frobLK p K (MaximalUnramifiedExtension p K)))
-
-
-open Classical in
-def invUr : (urT p K).H 2 →+ QZ := if h : ∃ f, IsInv p K f then h.choose else 0
-
 end
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField

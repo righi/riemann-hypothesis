@@ -66,11 +66,6 @@ theorem mem_B_succ {n : ℕ} {x : A.X (n + 1)} : x ∈ A.B (n + 1) ↔ ∃ y, A.
 @[simp] theorem Hom.H_cls (φ : Hom A B) {n : ℕ} (x : A.X n) (hx : A.d n x = 0) :
     φ.H n (A.cls n x hx) = B.cls n (φ.f n x) (φ.d_f_eq_zero hx) := rfl
 
-@[simp] theorem Hom.id_H (n : ℕ) : (Hom.id A).H n = LinearMap.id := by
-  refine LinearMap.ext fun c => ?_
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-  rfl
-
 end Cx
 
 
