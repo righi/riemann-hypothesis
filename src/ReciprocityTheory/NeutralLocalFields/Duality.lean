@@ -360,11 +360,6 @@ section Coeff
 variable {R : Type*} [CommRing R] {Γ : Type*} [Group Γ]
   {M : Type*} [AddCommGroup M] [Module R M]
 
-def charRep (χ : Γ →* Rˣ) : Representation R Γ R where
-  toFun g := ((χ g : Rˣ) : R) • LinearMap.id
-  map_one' := by ext; simp
-  map_mul' g h := by ext; simp [mul_comm]
-
 @[simp] theorem charRep_apply (χ : Γ →* Rˣ) (g : Γ) (x : R) :
     charRep χ g x = ((χ g : Rˣ) : R) * x := rfl
 
@@ -438,30 +433,6 @@ variable {D : Type*} [Group D] [TopologicalSpace D]
 
 end Cup
 
-section Cyc
-
-variable (K L : Type*) [Field K] [Field L] [Algebra K L] [IsAlgClosed L] [CharZero L]
-  (n : ℕ) [NeZero n]
-
-def cycN : (L ≃ₐ[K] L) →* (ZMod n)ˣ :=
-  (modularCyclotomicCharacter L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)).comp
-    (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L)
-
-variable {K L n} in
-
-theorem cycN_spec (σ : L ≃ₐ[K] L) (ζ : L) (h : ζ ^ n = 1) :
-    σ ζ = ζ ^ ((cycN K L n σ : ZMod n)).val := by
-  have hz : ζ ≠ 0 := by
-    rintro rfl
-    simp [NeZero.ne n] at h
-  have ht : Units.mk0 ζ hz ∈ rootsOfUnity n L := by
-    rw [mem_rootsOfUnity]; ext; simp [h]
-  have := modularCyclotomicCharacter.spec L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)
-    (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L σ) ht
-  simpa [cycN] using this
-
-end Cyc
-
 section Local
 
 variable (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
@@ -472,8 +443,6 @@ def inertiaSet : Set (GK p K) := {σ | ∀ x : PadicAlgCl p, ‖x‖ ≤ 1 → �
 
 def inertiaK : Subgroup (GK p K) := Subgroup.closure (inertiaSet p K)
 
-abbrev cycK (n : ℕ) [NeZero n] : GK p K →* (ZMod n)ˣ := cycN K (PadicAlgCl p) n
-
 variable {p K}
 
 variable (p) in
@@ -483,22 +452,6 @@ def KbarMult : Type := Additive (PadicAlgCl p)ˣ
 instance : AddCommGroup (KbarMult p) := inferInstanceAs (AddCommGroup (Additive (PadicAlgCl p)ˣ))
 instance : TopologicalSpace (KbarMult p) := ⊥
 instance : DiscreteTopology (KbarMult p) := ⟨rfl⟩
-
-variable (p K) in
-
-def kbarRep : Representation ℤ (GK p K) (KbarMult p) where
-  toFun σ := AddMonoidHom.toIntLinearMap
-    (MonoidHom.toAdditive (Units.map (σ : PadicAlgCl p →* PadicAlgCl p)))
-  map_one' := by
-    apply LinearMap.ext; intro x
-    apply Units.ext
-    rfl
-  map_mul' σ τ := by
-    apply LinearMap.ext; intro x
-    apply Units.ext
-    rfl
-
-abbrev QZ : Type := ℚ ⧸ (Int.castAddHom ℚ).range
 
 end Local
 

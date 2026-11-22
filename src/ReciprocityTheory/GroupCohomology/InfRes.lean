@@ -1,7 +1,8 @@
 import ReciprocityTheory.GroupCohomology.CupConnRightStatement
 import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 import ReciprocityTheory.GroupCohomology.LowHolds
-import ReciprocityTheory.GroupCohomology.InnerHolds
+import ReciprocityTheory.GroupCohomology.ContinuousContractNth
+import ReciprocityTheory.GroupCohomology.PrismOpZeroEval
 
 namespace ReciprocityTheory.Coh.InflationRestrictionInvariants
 
@@ -16,33 +17,6 @@ variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [
 instance instCCSInv (M : TRep R G) (N : Subgroup G) :
     ContinuousConstSMul R (Representation.invariants (M.rho.comp N.subtype)) :=
   ⟨fun c => (continuous_subtype_val.const_smul c).subtype_mk _⟩
-
-abbrev invQ (M : TRep R G) (N : Subgroup G) [N.Normal] : TRep R (G ⧸ N) where
-  V := Representation.invariants (M.rho.comp N.subtype)
-  rho := Representation.quotientToInvariants M.rho N
-  cont := by
-    have hq : Topology.IsQuotientMap (fun p : G × Representation.invariants (M.rho.comp N.subtype) =>
-        ((p.1 : G ⧸ N), p.2)) :=
-      (QuotientGroup.isOpenQuotientMap_mk.prodMap IsOpenQuotientMap.id).isQuotientMap
-    unfold Gal.ContAction
-    rw [hq.continuous_iff]
-    refine Continuous.subtype_mk ?_ _
-    exact M.cont.comp ((continuous_fst).prodMk (continuous_subtype_val.comp continuous_snd))
-
-def invP (M : TRep R G) (N : Subgroup G) [N.Normal] : Pair (invQ M N) M where
-  φ := QuotientGroup.mk' N
-  u := (Representation.invariants (M.rho.comp N.subtype)).subtype
-  φ_cont := continuous_quot_mk
-  u_cont := continuous_subtype_val
-  equiv _ _ := rfl
-
-theorem invariants_isInvRep (M : TRep R G) (N : Subgroup G) [N.Normal] : IsInvRep M N (invQ M N) (invP M N) := by
-  refine ⟨rfl, Topology.IsEmbedding.subtypeVal, fun m => ?_⟩
-  constructor
-  · rintro ⟨v, rfl⟩ g hg
-    exact v.2 ⟨g, hg⟩
-  · intro h
-    exact ⟨⟨m, fun g => h g.1 g.2⟩, rfl⟩
 
 end
 
@@ -63,18 +37,11 @@ abbrev e1 (a : G) : Fin 1 → G := fun _ => a
 theorem oneCochain_apply_fin_one (M : TRep R G) (x : M.coch.X 1) (g : Fin 1 → G) : x.1 g = x.1 (e1 (g 0)) :=
   congrArg x.1 (funext fun i => by rw [Fin.fin_one_eq_zero i])
 
-theorem memZ {A : Cx R} {n : ℕ} (x : A.X n) : x ∈ A.Z n ↔ A.d n x = 0 := LinearMap.mem_ker
-
 theorem memB {A : Cx R} {n : ℕ} (x : A.X (n + 1)) : x ∈ A.B (n + 1) ↔ ∃ y, A.d n y = x :=
   LinearMap.mem_range
 
 theorem H_mk {A B : Cx R} (φ : Hom A B) (n : ℕ) (z : A.Z n) :
     φ.H n (Submodule.Quotient.mk z) = Submodule.Quotient.mk (φ.Z n z) := rfl
-
-theorem mk_eq_zero_iff {A : Cx R} {n : ℕ} (z : A.Z n) :
-    (Submodule.Quotient.mk z : A.H n) = 0 ↔ z.1 ∈ A.B n := by
-  rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap]
-  rfl
 
 theorem oneDifferential_val (M : TRep R G) (x : M.coch.X 1) (a b : G) :
     (M.coch.d 1 x).1 ![a, b] = M.rho a (x.1 (e1 b)) - x.1 (e1 (a * b)) + x.1 (e1 a) := by
@@ -141,28 +108,6 @@ theorem cocycle_one (M : TRep R G) (x : M.coch.X 1) (hx : M.coch.d 1 x = 0) : x.
   rw [mul_one, map_one, Module.End.one_apply] at h
   have h2 : x.1 (e1 1) + x.1 (e1 1) - x.1 (e1 1) = 0 := by rw [← h]; abel
   simpa using h2
-
-theorem inf_inj (M : TRep R G) (N : Subgroup G) [N.Normal] (Q : TRep R (G ⧸ N)) (P : Pair Q M)
-    (hP : IsInvRep M N Q P) : Injective (P.hom.H 1) := by
-  obtain ⟨hφ, hemb, hrg⟩ := hP
-  have hφa : ∀ a, P.φ a = (a : G ⧸ N) := fun a => by rw [hφ]; rfl
-  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-  intro h hh
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ h
-  rw [H_mk, mk_eq_zero_iff, mem_oneCoboundaries_iff] at hh
-  obtain ⟨m, hm⟩ := hh
-  have hm' : ∀ a, P.u (z.1.1 (e1 (P.φ a))) = M.rho a m - m := hm
-  have hz1 := cocycle_one Q z.1 ((memZ _).1 z.2)
-  have hmN : ∀ g ∈ N, M.rho g m = m := fun g hg => by
-    have := hm' g
-    rw [hφa, (QuotientGroup.eq_one_iff g).2 hg, hz1, map_zero] at this
-    exact (sub_eq_zero.1 this.symm)
-  obtain ⟨q, rfl⟩ := (hrg m).2 hmN
-  rw [mk_eq_zero_iff, mem_oneCoboundaries_iff]
-  refine ⟨q, fun γ => ?_⟩
-  obtain ⟨a, rfl⟩ := QuotientGroup.mk_surjective γ
-  apply hemb.injective
-  rw [← hφa, hm' a, map_sub, P.equiv]
 
 end
 

@@ -140,9 +140,6 @@ theorem vOn_surjective_of_pos (he : 0 < eK p K) : Function.Surjective (vOn p K) 
   intro n
   exact ⟨n • ⟨x, hx⟩, by rw [map_zsmul, h2, smul_eq_mul, mul_one]⟩
 
-theorem vOn_surjective (hK : FiniteDimensional ℚ_[p] K) : Function.Surjective (vOn p K) :=
-  vOn_surjective_of_pos p K (eK_pos p K hK)
-
 def unitOf (x : multOf p K) : Kˣ :=
   Units.mk0 ⟨((Additive.toMul x.1 : (PadicAlgCl p)ˣ) : PadicAlgCl p), x.2⟩
     (fun h => (Additive.toMul x.1 : (PadicAlgCl p)ˣ).ne_zero (congrArg Subtype.val h))

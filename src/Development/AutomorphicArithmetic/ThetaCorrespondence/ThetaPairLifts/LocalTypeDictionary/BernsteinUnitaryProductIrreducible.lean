@@ -36,7 +36,6 @@ structure ThetaLocalInputs : Prop where
   realMetaplecticRepresentation : GlobalTheory.Published.RealMetaplecticRepresentation
   cuspDecayBound : GlobalTheory.Published.CuspDecayBound
   gLHoweDuality : GlobalTheory.Published.GLHoweDuality
-  kudlaSplittingSplitUnitary : GlobalTheory.Published.KudlaSplittingSplitUnitary
   metaplecticRepresentation : GlobalTheory.Published.MetaplecticRepresentation
   harishChandraModules : GlobalTheory.Published.HarishChandraModules
   discreteSeriesCover : GlobalTheory.Published.DiscreteSeriesCover

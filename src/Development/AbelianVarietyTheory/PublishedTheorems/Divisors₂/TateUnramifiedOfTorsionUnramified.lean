@@ -30,16 +30,6 @@ variable (R K : Type) [CommRing R] [Field K] [Algebra R K]
 def IsAbove {L : Type} [Field L] [Algebra K L] (V : Subring L) : Prop :=
   V.comap (algebraMap K L) = (algebraMap R K).range
 
-def HasGoodReduction (A : Over (Sp K)) [GrpObj A] : Prop :=
-  ∃ (G : Over (Sp R)) (_ : GrpObj G), IsAbelianScheme G ∧
-    ∃ e : (Over.pullback (spMap (algebraMap R K))).obj G ≅ A, IsMonHom e.hom
-
-def HasPotentialGoodReduction (A : Over (Sp K)) [GrpObj A] : Prop :=
-  ∃ (L W : Type) (_ : Field L) (_ : Algebra K L) (_ : FiniteDimensional K L) (_ : CommRing W) (_ : IsDomain W)
-    (_ : IsDiscreteValuationRing W) (_ : Algebra W L) (_ : IsFractionRing W L),
-    IsAbove R K (algebraMap W L).range ∧
-      HasGoodReduction W L ((Over.pullback (spMap (algebraMap K L))).obj A)
-
 end Reduction
 
 section Galois
@@ -54,15 +44,6 @@ def specAut (σ : Ω ≃ₐ[K] Ω) : ptOver K Ω ⟶ ptOver K Ω :=
     ext x
     simp)
 
-theorem specAut_one : specAut (1 : Ω ≃ₐ[K] Ω) = 𝟙 _ :=
-  Over.OverMorphism.ext (Spec.map_id (CommRingCat.of Ω))
-
-theorem specAut_mul (σ τ : Ω ≃ₐ[K] Ω) : specAut (σ * τ) = specAut σ ≫ specAut τ :=
-  Over.OverMorphism.ext (by
-    change spMap _ = spMap _ ≫ spMap _
-    rw [← Spec.map_comp]
-    rfl)
-
 variable (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A]
 
 def galPts (σ : Ω ≃ₐ[K] Ω) : (ptOver K Ω ⟶ A) →* (ptOver K Ω ⟶ A) :=
@@ -72,15 +53,6 @@ omit [IsCommMonObj A] in
 theorem galPts_left (σ : Ω ≃ₐ[K] Ω) (x : ptOver K Ω ⟶ A) :
     (galPts A σ x).left = spMap (σ : Ω →+* Ω) ≫ x.left := rfl
 
-def galTate (l : ℕ) [Fact l.Prime] : (Ω ≃ₐ[K] Ω) →* Module.End ℤ_[l] (Tate l (ptOver K Ω ⟶ A)) where
-  toFun σ := Tate.map l (galPts A σ)
-  map_one' := LinearMap.ext fun t => Tate.ext fun n => by
-    change specAut 1 ≫ t.lev n = t.lev n
-    rw [specAut_one, Category.id_comp]
-  map_mul' σ τ := LinearMap.ext fun t => Tate.ext fun n => by
-    change specAut (σ * τ) ≫ t.lev n = specAut σ ≫ specAut τ ≫ t.lev n
-    rw [specAut_mul, Category.assoc]
-
 theorem lev_galTate (l : ℕ) [Fact l.Prime] (σ : Ω ≃ₐ[K] Ω) (t : Tate l (ptOver K Ω ⟶ A)) (n : ℕ) :
     (galTate A l σ t).lev n = galPts A σ (t.lev n) := rfl
 
@@ -89,47 +61,11 @@ variable (K) in
 def inertia (V : ValuationSubring Ω) : Subgroup (Ω ≃ₐ[K] Ω) :=
   (V.inertiaSubgroup K).map (V.decompositionSubgroup K).subtype
 
-def TorsionUnramified (V : ValuationSubring Ω) (m : ℕ) : Prop :=
-  ∀ σ ∈ inertia K V, ∀ x : ptOver K Ω ⟶ A, x ^ m = 1 → galPts A σ x = x
-
-def TateUnramified (V : ValuationSubring Ω) (l : ℕ) [Fact l.Prime] : Prop :=
-  ∀ σ ∈ inertia K V, galTate A l σ = 1
-
 end Galois
-
-def HasCMBy {K : Type} [Field K] (A : Over (Sp K)) [GrpObj A] (F : Type) [Field F] [NumberField F] : Prop :=
-  (∃ d : ℕ, SmoothOfRelativeDimension d A.hom ∧ Module.finrank ℚ F = 2 * d) ∧
-    ∃ (O : Type) (_ : CommRing O) (_ : Algebra O F) (_ : IsFractionRing O F), Nonempty (OAct O A)
 
 end AbVarRed
 
 open AbVarRed IsLocalRing
-
-def NeronOggShafarevichSt : Prop :=
-  ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [PerfectField (ResidueField R)]
-    [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
-    (V : ValuationSubring Ω), IsAbove R K V.toSubring →
-    ∀ (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A →
-      List.TFAE [HasGoodReduction R K A,
-        ∀ m : ℕ, (m : ResidueField R) ≠ 0 → TorsionUnramified A V m,
-        {m : ℕ | (m : ResidueField R) ≠ 0 ∧ TorsionUnramified A V m}.Infinite,
-        ∃ (l : ℕ) (_ : Fact l.Prime), (l : ResidueField R) ≠ 0 ∧ TateUnramified A V l]
-
-def PotentialGoodReductionSt : Prop :=
-  ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [PerfectField (ResidueField R)]
-    [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
-    (V : ValuationSubring Ω), IsAbove R K V.toSubring →
-    ∀ (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A →
-    ∀ (l : ℕ) [Fact l.Prime], (l : ResidueField R) ≠ 0 →
-      (HasPotentialGoodReduction R K A ↔ (galTate A l '' (inertia K V : Set (Ω ≃ₐ[K] Ω))).Finite)
-
-def CMPotentialGoodReductionSt : Prop :=
-  ∀ (R K : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Finite (ResidueField R)]
-    [Field K] [Algebra R K] [IsFractionRing R K] (A : Over (Sp K)) [GrpObj A], IsAbelianScheme A →
-    ∀ (F : Type) [Field F] [NumberField F], HasCMBy A F → HasPotentialGoodReduction R K A
-
-def SerreTateGoodReductionSt : Prop :=
-  NeronOggShafarevichSt ∧ PotentialGoodReductionSt ∧ CMPotentialGoodReductionSt
 
 namespace AbVarRed
 
@@ -155,40 +91,12 @@ theorem mem_inertia_iff {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] (V : V
   · rintro ⟨h1, h2⟩
     exact ⟨⟨σ, h1⟩, (key _).2 h2, rfl⟩
 
-theorem exists_isAbove (R K Ω : Type) [CommRing R] [IsDomain R] [ValuationRing R] [Field K] [Algebra R K]
-    [IsFractionRing R K] [Field Ω] [Algebra K Ω] : ∃ V : ValuationSubring Ω, IsAbove R K V.toSubring := by
-  obtain ⟨V, -, -, -, h⟩ := exists_valuationSubring_dominating (V := R) (algebraMap K Ω)
-  exact ⟨V, Subring.ext h⟩
-
 theorem hasGoodReduction_baseChange_iff {K W L : Type} [Field K] [CommRing W] [Field L] [Algebra K L] [Algebra W L]
     (A : Over (Sp K)) [GrpObj A] :
     HasGoodReduction W L ((Over.pullback (spMap (algebraMap K L))).obj A) ↔
       ∃ (G : Over (Sp W)) (_ : GrpObj G), IsAbelianScheme G ∧ GlobalTheory.SS.IsModel (L := L) A G := Iff.rfl
 
-theorem tateUnramified_of_torsionUnramified {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {A : Over (Sp K)}
-    [GrpObj A] [IsCommMonObj A] {V : ValuationSubring Ω} {l : ℕ} [Fact l.Prime]
-    (h : ∀ n, TorsionUnramified A V (l ^ n)) : TateUnramified A V l :=
-  fun σ hσ => LinearMap.ext fun t => Tate.ext fun n => h n σ hσ _ (t.lev_pow n)
-
 end AbVarRed
-
-section Consequences
-
-variable {R K Ω : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K]
-  [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω] {V : ValuationSubring Ω}
-  {A : Over (Sp K)} [GrpObj A] [IsCommMonObj A]
-
-theorem NeronOggShafarevichSt.iff_tateUnramified (h : NeronOggShafarevichSt) [PerfectField (ResidueField R)]
-    (hV : IsAbove R K V.toSubring) (hA : IsAbelianScheme A) (l : ℕ) [Fact l.Prime]
-    (hl : (l : ResidueField R) ≠ 0) : HasGoodReduction R K A ↔ TateUnramified A V l := by
-  have t := h R K Ω V hV A hA
-  have t01 : HasGoodReduction R K A ↔ ∀ m : ℕ, (m : ResidueField R) ≠ 0 → TorsionUnramified A V m := t.out 0 1
-  have t03 : HasGoodReduction R K A ↔
-      ∃ (l : ℕ) (_ : Fact l.Prime), (l : ResidueField R) ≠ 0 ∧ TateUnramified A V l := t.out 0 3
-  exact ⟨fun hg => tateUnramified_of_torsionUnramified fun n =>
-    t01.1 hg (l ^ n) (by rw [Nat.cast_pow]; exact pow_ne_zero _ hl), fun ht => t03.2 ⟨l, _, hl, ht⟩⟩
-
-end Consequences
 
 namespace AbVarRed
 

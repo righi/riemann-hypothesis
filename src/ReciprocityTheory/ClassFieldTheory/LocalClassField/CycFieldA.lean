@@ -2,8 +2,8 @@ import Mathlib
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.CycDefs
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.GabLim
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormOpen
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.RecDefs
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.NormOpenB
 
 namespace ReciprocityTheory.DiscreteGroups.LocalClassField
 

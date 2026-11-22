@@ -6,8 +6,8 @@ import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOn
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.BijectiveSmulChartSec
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralAtSection
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
+
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj CategoryTheory.MonObj Pointwise
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -105,40 +105,3 @@ private theorem UpperTheory.Lit.Nos.IntegralSec.ev_pull {W K' : Type} [CommRing 
       (congrArg (e₀.appLE U ⊤ h₀ ≫ ·) h1))
   exact congrArg (fun φ => φ.hom s) e
 
-theorem UpperTheory.Lit.Nos.integralSec :
-    ∀ (W K' : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field K'] [Algebra W K'] [IsFractionRing W K'] (G : Over (Sp W)) (P M : LB G.left) (N : LB (pullback G.hom (spMap (algebraMap W K')))), P.IsLB → M.IsLB → N.IsLB → ∀ (w : LB.Iso (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))) N) (w₁ : LB.Iso (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))) N), w.IsGen → w₁.IsGen → GlobalTheory.SectionLattice.IntegralAtSection G.hom w w₁ → ∀ (v : LB.Iso P M) (c : K'), v.IsGen → (∀ (n : N.ι) (i : P.ι) (m : M.ι) (hle : N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m) ≤ pullback.fst G.hom (spMap (algebraMap W K')) ⁻¹ᵁ (M.U m ⊓ P.U i)), GlobalTheory.AbLaw.rs _ (inf_le_left : N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m) ≤ N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i)) (w₁.s (n, fun _ => i)).val = GlobalTheory.AbLaw.cst (pullback.snd G.hom (spMap (algebraMap W K'))) _ c * ((pullback.fst G.hom (spMap (algebraMap W K'))).appLE (M.U m ⊓ P.U i) _ hle).hom (v.s (m, i)).val * GlobalTheory.AbLaw.rs _ (le_inf (inf_le_left.trans inf_le_left) inf_le_right : N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m) ≤ N.U n ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m)) (w.s (n, fun _ => m)).val) → ∀ (t : P.Sec) (b : N.Sec), GlobalTheory.Cartier.SecMaps w₁ (GlobalTheory.Cartier.secPull t (pullback.fst G.hom (spMap (algebraMap W K')))) b → ∃ t' : M.Sec, GlobalTheory.Cartier.SecMaps w (GlobalTheory.Cartier.secPull t' (pullback.fst G.hom (spMap (algebraMap W K')))) b := by
-  intro W K' _ _ _ _ _ _ G P M N hP hM _ w w₁ _ _ hI v c hv hrel t b hb
-  obtain ⟨e₀, -, x, hx₁, hx₂, i, m, n, hi, hm, h₁, h₂, a, ha⟩ := hI
-  have hle : ∀ (n : N.ι) (i : P.ι) (m : M.ι), N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m) ≤ pullback.fst G.hom (spMap (algebraMap W K')) ⁻¹ᵁ (M.U m ⊓ P.U i) := fun n i m =>
-    le_inf (inf_le_right.trans (GlobalTheory.Cartier.pull_U M _ (fun _ => m)).le)
-      ((inf_le_left.trans inf_le_right).trans (GlobalTheory.Cartier.pull_U P _ (fun _ => i)).le)
-  have h₃ : ⊤ ≤ x ⁻¹ᵁ (N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m)) :=
-    fun y hy => ⟨h₁ hy, (h₂ hy).2⟩
-  have h₀ : ⊤ ≤ e₀ ⁻¹ᵁ (M.U m ⊓ P.U i) := fun y hy => ⟨hm hy, hi hy⟩
-  have hres : ∀ (U V : (pullback G.hom (spMap (algebraMap W K'))).Opens) (k : V ≤ U) (hU : ⊤ ≤ x ⁻¹ᵁ U)
-      (hV : ⊤ ≤ x ⁻¹ᵁ V) (s : Γ(pullback G.hom (spMap (algebraMap W K')), U)),
-      (x.appLE V ⊤ hV).hom (GlobalTheory.AbLaw.rs _ k s) = (x.appLE U ⊤ hU).hom s := fun U V k hU hV s =>
-    congrArg (fun φ => φ.hom s) (Scheme.Hom.map_appLE x hV (homOfLE k).op)
-  have e := congrArg (fun s => (Scheme.ΓSpecIso (CommRingCat.of K')).hom.hom ((x.appLE _ ⊤ h₃).hom s))
-    (hrel n i m (hle n i m))
-  simp only [map_mul] at e
-  erw [hres _ _ _ h₁, hres _ _ _ h₂, UpperTheory.Lit.Nos.IntegralSec.ev_cst _ x hx₂,
-    UpperTheory.Lit.Nos.IntegralSec.ev_pull _ x e₀ hx₁ _ _ _ _ h₀] at e
-  have hu : IsUnit ((Scheme.ΓSpecIso (CommRingCat.of K')).hom.hom
-      ((x.appLE _ ⊤ h₂).hom (w.s (n, fun _ => m)).val)) := ((Units.isUnit _).map _).map _
-  have hv₀ : IsUnit ((Scheme.ΓSpecIso (CommRingCat.of W)).hom.hom
-      ((e₀.appLE _ ⊤ h₀).hom (v.s (m, i)).val)) := ((Units.isUnit _).map _).map _
-  have e' := mul_right_cancel₀ hu.ne_zero (ha.symm.trans e)
-  obtain ⟨r, hr⟩ := hv₀.exists_right_inv
-  have hc : c = algebraMap W K' (a * r) := by
-    rw [map_mul, e', _root_.mul_assoc, ← map_mul]
-    exact ((congrArg (fun z => c * algebraMap W K' z) hr).trans (by rw [map_one, _root_.mul_one])).symm
-  refine UpperTheory.Lit.Nos.IntegralSec.sec_of_rel _ P M N hP hM w w₁ v hv
-    (G.hom.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of W)).inv.hom (a * r))) ?_ t b hb
-  intro n i m V k₁ k₂ k₃
-  have k : V ≤ N.U n ⊓ (P.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => i) ⊓ (M.pull (pullback.fst G.hom (spMap (algebraMap W K')))).U (fun _ => m) := le_inf k₁ (k₂.trans inf_le_right)
-  have e := congrArg (GlobalTheory.AbLaw.rs _ k) (hrel n i m (hle n i m))
-  rw [map_mul, map_mul, GlobalTheory.AbLaw.rs_cst, hc,
-    UpperTheory.Lit.Nos.IntegralSec.cst_algebraMap G.hom _ _ pullback.condition] at e
-  refine ((GlobalTheory.AbLaw.rs_rs _ _ _).symm.trans e).trans ?_
-  exact congrArg₂ (· * ·) (congrArg (_ * ·) (GlobalTheory.LB.resG_appLE _ _ k _)) (GlobalTheory.AbLaw.rs_rs _ _ _)

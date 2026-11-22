@@ -1,6 +1,16 @@
 import Mathlib
 import ReciprocityTheory.NeutralLocalFields.Duality
-import ReciprocityTheory.GroupCohomology.LengthKerEqCoker
+import ReciprocityTheory.GroupCohomology.CardLenStatement
+import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
+import ReciprocityTheory.GroupCohomology.LowHolds
+import ReciprocityTheory.GroupCohomology.PairHomFCoeOfId
+import ReciprocityTheory.GroupCohomology.ConnNatHolds
+import ReciprocityTheory.GroupCohomology.Shapiro
+import ReciprocityTheory.GroupCohomology.ShiftA
+import ReciprocityTheory.GroupCohomology.FiniteLevel
+import ReciprocityTheory.GroupCohomology.FiberFirstH0Injective
+import ReciprocityTheory.GroupCohomology.CupConnRightStatement
+import ReciprocityTheory.GroupCohomology.ModelComparisonDegreeZeroBijective
 
 namespace ReciprocityTheory.DiscreteGroups.LocalClassField.InflationOneCocycles
 

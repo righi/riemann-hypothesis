@@ -35,23 +35,6 @@ theorem norm_lt_one_iff_vK_of_pos (he : 0 < eK p K) (x : Kˣ) :
   rw [← not_le, h']
   omega
 
-theorem mem_UK_iff_of_pos (he : 0 < eK p K) (x : Kˣ) : x ∈ UK p K ↔ vK p K x = 0 := by
-  show ‖((x : K) : PadicAlgCl p)‖ = 1 ↔ _
-  have h1 := norm_le_one_iff_vK_of_pos p K he x
-  have h2 := norm_lt_one_iff_vK_of_pos p K he x
-  constructor
-  · intro h
-    have h3 := h1.1 h.le
-    have h4 : ¬ (1 ≤ vK p K x) := fun h5 => (h2.2 h5).ne h
-    omega
-  · intro h
-    have h3 := h1.2 (by omega)
-    have h4 : ¬ ‖((x : K) : PadicAlgCl p)‖ < 1 := fun h5 => by have := h2.1 h5; omega
-    exact le_antisymm h3 (not_lt.1 h4)
-
-theorem mem_UK_iff (hK : FiniteDimensional ℚ_[p] K) (x : Kˣ) : x ∈ UK p K ↔ vK p K x = 0 :=
-  mem_UK_iff_of_pos p K (eK_pos p K hK) x
-
 theorem norm_eq_rpow_vK (hK : FiniteDimensional ℚ_[p] K) (x : Kˣ) :
     ‖((x : K) : PadicAlgCl p)‖ = (p : ℝ) ^ (- (vK p K x : ℝ) / eK p K) :=
   norm_eq_rpow_vK_of_pos p K (eK_pos p K hK) x
@@ -71,44 +54,7 @@ theorem vK_p (x : Kˣ) (hx : ((x : K) : PadicAlgCl p) = (p : PadicAlgCl p)) : vK
   rw [vK_spec, hx, logb_norm_p]
   simp
 
-def eLK : ℕ := eK p L / eK p K
-
-def fLK : ℕ := fK p L / fK p K
-
 variable {K L}
-
-theorem multOf_mono (h : K ≤ L) : multOf p K ≤ multOf p L := fun _ hx => h hx
-
-theorem valueGroup_mono (h : K ≤ L) : valueGroup p K ≤ valueGroup p L := AddSubgroup.map_mono (multOf_mono p h)
-
-theorem eK_dvd_of_le (h : K ≤ L) : eK p K ∣ eK p L :=
-  ⟨_, (AddSubgroup.relIndex_mul_relIndex (AddSubgroup.zmultiples (1 : ℝ)) (valueGroup p K) (valueGroup p L)
-    (AddSubgroup.zmultiples_le_of_mem (one_mem_valueGroup p K)) (valueGroup_mono p h)).symm⟩
-
-theorem eK_eq_mul_of_le (h : K ≤ L) : eK p L = eLK p K L * eK p K := (Nat.div_mul_cancel (eK_dvd_of_le p h)).symm
-
-theorem eK_eq_mul (hL : FiniteDimensional ℚ_[p] L) (h : K ≤ L) : eK p L = eLK p K L * eK p K := eK_eq_mul_of_le p h
-
-theorem eK_eq_of_norm (h : K ≤ L) (hn : ∀ x ∈ L, ∃ y ∈ K, ‖x‖ = ‖y‖) : eK p L = eK p K := by
-  have h1 : valueGroup p L = valueGroup p K := by
-    refine le_antisymm ?_ (valueGroup_mono p h)
-    rintro _ ⟨x, hx, rfl⟩
-    obtain ⟨y, hy, hxy⟩ := hn _ hx
-    have hy0 : y ≠ 0 := by
-      rintro rfl
-      rw [norm_zero, norm_eq_zero] at hxy
-      exact (Additive.toMul x : (PadicAlgCl p)ˣ).ne_zero hxy
-    refine ⟨Additive.ofMul (Units.mk0 y hy0), hy, ?_⟩
-    rw [vbar_apply p x, hxy]
-    rfl
-  unfold eK
-  rw [h1]
-
-theorem eK_Kn (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n) : eK p (Kn p K n) = eK p K :=
-  eK_eq_of_norm p (le_Kn p K n) fun _ hx => norm_Kn p K hK hn hx
-
-theorem eLK_Kn (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n) : eLK p K (Kn p K n) = 1 := by
-  rw [eLK, eK_Kn p hK hn, Nat.div_self (eK_pos p K hK)]
 
 end
 

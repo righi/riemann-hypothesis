@@ -167,9 +167,6 @@ theorem exists_valuationSubring_comap_eq (T : ValuationSubring K) (χ : K →+* 
   rintro ⟨a, rfl⟩
   exact a.2
 
-def comapToValuationSubring (V' : ValuationSubring K') (χ : K →+* K') : V'.comap χ →+* V' :=
-  (χ.comp (V'.comap χ).subtype).codRestrict V'.toSubring fun a ↦ a.2
-
 @[simp]
 theorem coe_comapToValuationSubring (V' : ValuationSubring K') (χ : K →+* K') (a : V'.comap χ) :
     (comapToValuationSubring V' χ a : K') = χ a := rfl

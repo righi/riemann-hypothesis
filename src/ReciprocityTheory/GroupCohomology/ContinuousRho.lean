@@ -1,7 +1,9 @@
 import ReciprocityTheory.GroupCohomology.CardLenStatement
 import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
-import ReciprocityTheory.GroupCohomology.ResNormalHolds
-import ReciprocityTheory.GroupCohomology.InnerHolds
+import ReciprocityTheory.GroupCohomology.CupConnRightStatement
+import ReciprocityTheory.GroupCohomology.ContinuousContractNth
+import ReciprocityTheory.GroupCohomology.PrismOpZeroEval
+import ReciprocityTheory.GroupCohomology.PartialProdCoe
 
 namespace ReciprocityTheory.Coh
 

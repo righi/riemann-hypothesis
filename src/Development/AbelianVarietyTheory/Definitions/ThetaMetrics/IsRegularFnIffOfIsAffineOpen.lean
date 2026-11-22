@@ -193,12 +193,6 @@ theorem IsRegularFn.associated_of_germ {U : X.Opens} {a b : Γ(X, U)} (ha : IsRe
     (ha.dvd_of_germ fun x hx => Ideal.span_singleton_le_span_singleton.1 (h x hx).ge)
     (hb.dvd_of_germ fun x hx => Ideal.span_singleton_le_span_singleton.1 (h x hx).le)
 
-theorem sec_ext {L : LB X} {s t : L.Sec} (h : ∀ i, s.f i = t.f i) : s = t := by
-  obtain ⟨s, _⟩ := s
-  obtain ⟨t, _⟩ := t
-  obtain rfl : s = t := funext h
-  rfl
-
 theorem sec_compat {L : LB X} (s : L.Sec) (i j : L.ι) {W : X.Opens} (hi : W ≤ L.U i)
     (hj : W ≤ L.U j) :
     resG X hi (s.f i) = resG X (le_inf hi hj) (L.g i j : Γ(X, L.U i ⊓ L.U j)) * resG X hj (s.f j) := by
@@ -245,15 +239,6 @@ theorem SecMaps.unique {A B : LB X} {w w' : LB.Iso A B} {a : A.Sec} {b : B.Sec}
   congr 1
   funext p
   exact Units.ext (((ha p.2).resG inf_le_right).mul_right_cancel ((h p).symm.trans (h' p)))
-
-theorem SecMaps.eq {A B : LB X} (hA : A.IsLB) {w : LB.Iso A B} {a : A.Sec} {b b' : B.Sec}
-    (h : SecMaps w a b) (h' : SecMaps w a b') : b = b' :=
-  sec_ext fun p => ext_germ fun x hx => by
-    obtain ⟨q, hq⟩ := LB.mem_of_cover hA x
-    have hm : x ∈ B.U p ⊓ A.U q := ⟨hx, hq⟩
-    have := congrArg (X.presheaf.germ (B.U p ⊓ A.U q) x hm).hom
-      ((h (p, q)).trans (h' (p, q)).symm)
-    rwa [germ_resG, germ_resG] at this
 
 theorem existsUnique_secMaps {A B : LB X} {a : A.Sec} {b : B.Sec} (ha : IsRegularSec a)
     (h : ∀ (p : B.ι) (q : A.ι), Associated (resG X (inf_le_right : B.U p ⊓ A.U q ≤ A.U q) (a.f q))

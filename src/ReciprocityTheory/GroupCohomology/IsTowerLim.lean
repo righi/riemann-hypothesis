@@ -35,11 +35,6 @@ structure Hom (A B : Cx R) where
 
 variable {A B C : Cx R}
 
-def Hom.id (A : Cx R) : Hom A A := ⟨fun _ => LinearMap.id, fun _ _ => rfl⟩
-
-def Hom.comp (ψ : Hom B C) (φ : Hom A B) : Hom A C :=
-  ⟨fun n => (ψ.f n).comp (φ.f n), fun n x => by simp [φ.comm, ψ.comm]⟩
-
 def Hom.Z (φ : Hom A B) (n : ℕ) : A.Z n →ₗ[R] B.Z n :=
   (φ.f n).restrict fun x hx => by
     have hx' : A.d n x = 0 := hx
@@ -58,8 +53,6 @@ def Hom.H (φ : Hom A B) (n : ℕ) : A.H n →ₗ[R] B.H n :=
       refine ⟨φ.f n y, ?_⟩
       show B.d n (φ.f n y) = φ.f (n + 1) x.1
       rw [← φ.comm, hy]; rfl
-
-def Hom.QuasiIso (φ : Hom A B) : Prop := ∀ n, Function.Bijective (φ.H n)
 
 structure SES (i : Hom A B) (p : Hom B C) : Prop where
   inj : ∀ n, Function.Injective (i.f n)

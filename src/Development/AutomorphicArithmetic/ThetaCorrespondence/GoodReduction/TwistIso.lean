@@ -6,7 +6,7 @@ import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOn
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.BijectiveSmulChartSec
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralAtSection
+
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj CategoryTheory.MonObj Pointwise
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -120,41 +120,3 @@ private theorem transport {Y : Scheme.{0}} (ρ : Y ⟶ Y) {A A' B : LB Y} (τ : 
 
 end UpperTheory.Lit.Nos.TwistIsomorphismSections
 
-open UpperTheory.Lit.Nos.TwistIsomorphismSections in
-theorem UpperTheory.Lit.Nos.twistIso :
-    ∀ {X₁ X₂ Y : Scheme.{0}} {K' : Type} [Field K'] (L₁ : LB X₁) (L₂ : LB X₂) (f₁ : Y ⟶ X₁) (f₂ : Y ⟶ X₂) (q : Y ⟶ Sp K') (ρ : Y ⟶ Y) (φ : X₁ ⟶ X₁) (σ : K' →+* K'), f₁ ≫ φ = ρ ≫ f₁ → ρ ≫ f₂ = f₂ → ρ ≫ q = q ≫ spMap σ → L₁.IsLB → L₂.IsLB → ∀ (w : LB.Iso (L₁.pull f₁) (L₂.pull f₂)), w.IsGen → ∃ w₁ : LB.Iso ((L₁.pull φ).pull f₁) (L₂.pull f₂), w₁.IsGen ∧ (∀ (n : ℕ) (s : Fin n → L₂.Sec) (u : L₁.Sec) (c : Fin n → K'), GlobalTheory.Cartier.SecMaps w (GlobalTheory.Cartier.secPull u f₁) (∑ k, GlobalTheory.AbLaw.cst q ⊤ (c k) • GlobalTheory.Cartier.secPull (s k) f₂) → GlobalTheory.Cartier.SecMaps w₁ (GlobalTheory.Cartier.secPull (GlobalTheory.Cartier.secPull u φ) f₁) (∑ k, GlobalTheory.AbLaw.cst q ⊤ (σ (c k)) • GlobalTheory.Cartier.secPull (s k) f₂)) ∧ (∀ x : Sp K' ⟶ Y, x ≫ ρ = spMap σ ≫ x → ∀ (n : (L₂.pull f₂).ι) (i : ((L₁.pull φ).pull f₁).ι) (h : ⊤ ≤ x ⁻¹ᵁ ((L₂.pull f₂).U n ⊓ ((L₁.pull φ).pull f₁).U i)) (h' : ⊤ ≤ x ⁻¹ᵁ ((L₂.pull f₂).U n ⊓ (L₁.pull f₁).U (fun _ => i PUnit.unit PUnit.unit))), (Scheme.ΓSpecIso (CommRingCat.of K')).hom.hom ((x.appLE _ ⊤ h).hom (w₁.s (n, i)).val) = σ ((Scheme.ΓSpecIso (CommRingCat.of K')).hom.hom ((x.appLE _ ⊤ h').hom (w.s (n, fun _ => i PUnit.unit PUnit.unit)).val))) := by
-  intro X₁ X₂ Y K' _ L₁ L₂ f₁ f₂ q ρ φ σ h₁ h₂ hq _ _ w hw
-  have lB : ∀ n : (L₂.pull f₂).ι, (L₂.pull f₂).U n ≤ ρ ⁻¹ᵁ (L₂.pull f₂).U n := fun n => by
-    rw [GlobalTheory.LB.pull_U, ← Scheme.Hom.comp_preimage, h₂]
-  let τ : ((L₁.pull φ).pull f₁).ι → (L₁.pull f₁).ι := fun i _ => i PUnit.unit PUnit.unit
-  have lA : ∀ i : ((L₁.pull φ).pull f₁).ι, ((L₁.pull φ).pull f₁).U i ≤
-      ρ ⁻¹ᵁ (L₁.pull f₁).U (τ i) := fun i => by
-    rw [GlobalTheory.LB.pull_U f₁ (τ i), ← Scheme.Hom.comp_preimage, ← h₁, Scheme.Hom.comp_preimage]
-    exact (GlobalTheory.LB.pull_U_le f₁ i).trans (f₁.preimage_mono (GlobalTheory.LB.pull_U_le φ _))
-  obtain ⟨w₁, hg, hs, hv⟩ := transport ρ τ lA lB (fun i j => by
-      have l : ((L₁.pull φ).pull f₁).U i ⊓ ((L₁.pull φ).pull f₁).U j ≤
-          (f₁ ≫ φ) ⁻¹ᵁ (L₁.U (i PUnit.unit PUnit.unit) ⊓ L₁.U (j PUnit.unit PUnit.unit)) :=
-        inf_le_inf ((GlobalTheory.LB.pull_U_le f₁ i).trans (f₁.preimage_mono (GlobalTheory.LB.pull_U_le φ _)))
-          ((GlobalTheory.LB.pull_U_le f₁ j).trans (f₁.preimage_mono (GlobalTheory.LB.pull_U_le φ _)))
-      refine (pull_g_val f₁ i j).trans ((congrArg _ (pull_g_val φ _ _)).trans
-        ((appLE_appLE f₁ φ _ rfl _ _ l _).trans ?_))
-      exact ((congrArg _ (pull_g_val f₁ (τ i) (τ j))).trans (appLE_appLE ρ f₁ _ h₁.symm _ _ l _)).symm)
-    (fun i j => (pull_g_val f₂ i j).trans
-      ((congrArg _ (pull_g_val f₂ i j)).trans (appLE_appLE ρ f₂ _ h₂ _ _ _ _)).symm) w hw
-  refine ⟨w₁, hg, fun m s u c H => hs _ _ _ _ (fun i => ?_) (fun n => ?_) H, fun x hx n i h h' => ?_⟩
-  · have l : ((L₁.pull φ).pull f₁).U i ≤ (f₁ ≫ φ) ⁻¹ᵁ L₁.U (i PUnit.unit PUnit.unit) :=
-      (GlobalTheory.LB.pull_U_le f₁ i).trans (f₁.preimage_mono (GlobalTheory.LB.pull_U_le φ _))
-    exact (appLE_appLE f₁ φ _ rfl (GlobalTheory.LB.pull_U_le φ _) (GlobalTheory.LB.pull_U_le f₁ i) l _).trans
-      (appLE_appLE ρ f₁ _ h₁.symm (GlobalTheory.LB.pull_U_le f₁ (τ i)) (lA i) l _).symm
-  · rw [sum_f, sum_f, map_sum]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [GlobalTheory.LB.smul_f, GlobalTheory.LB.smul_f, map_mul, secPull_f, appLE_appLE ρ f₂ _ h₂ _ _ (GlobalTheory.LB.pull_U_le f₂ n),
-      GlobalTheory.LB.appLE_resG, ← appTop_cst ρ q q σ hq]
-    rfl
-  · have e : (x.appLE _ ⊤ h).hom (w₁.s (n, i)).val =
-        ((spMap σ).appLE ⊤ ⊤ le_top).hom ((x.appLE _ ⊤ h').hom (w.s (n, τ i)).val) := by
-      have l : ⊤ ≤ (x ≫ ρ) ⁻¹ᵁ ((L₂.pull f₂).U n ⊓ (L₁.pull f₁).U (τ i)) :=
-        h.trans (x.preimage_mono (inf_le_inf (lB n) (lA i)))
-      exact (congrArg _ (hv n i)).trans ((appLE_appLE x ρ _ rfl _ _ l _).trans
-        (appLE_appLE (spMap σ) x _ hx.symm _ _ l _).symm)
-    exact (congrArg _ e).trans (ΓSpec_spMap σ _)
