@@ -113,7 +113,10 @@ theorem eigAd (Y : RdTw x N) (H : ∀ i y, x.r.Y.mj.eW i y = eWB Y i y) {Sb eig}
     EigAd Y ((Sb)) ((eig)) := fun i σ k Q α Rr hd hg y hy =>
   (by with_unfolding_all exact ((eigAd_of h (((eWB Y))) ((H)) ((i)) ((σ)) k ((Q)) ((α)) ((Rr)) (((hkDat hd))) ((hg)) ((y)) ((hy))) : _))
 
-def ratInTw (n : InRat x.r.Y x.m.z.cG) : RatIn (w.st (oTw x N).Z).toD7
+-- `noncomputable` works around a Lean compiler panic (`ExplicitBoxing`, "unreachable code")
+-- when generating code for this definition (seen on v4.36.0 and v4.37.0-rc1). It only skips
+-- code generation; the kernel still checks everything that uses this definition.
+noncomputable def ratInTw (n : InRat x.r.Y x.m.z.cG) : RatIn (w.st (oTw x N).Z).toD7
     (ratDatR (datTw x N).R (datTw x N).cG n.kKs n.hk) where
   Sb := n.In.Sb
   rho := n.In.rho
