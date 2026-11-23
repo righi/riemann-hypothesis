@@ -71,20 +71,6 @@ def HomogExistsStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [G
   [IsTopologicalGroup G] (M : TRep R G) (X : Type u) [TopologicalSpace X] [MulAction G X],
   ∃ A e, IsHomog M X A e
 
-def HomogIsoStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G]
-  [IsTopologicalGroup G] (M : TRep R G), ∃ e, IsHomog M G M.coch e ∧
-    (∀ n f x, (e n f).1 x = M.rho (x 0) (f.1 fun i => (x i.castSucc)⁻¹ * x i.succ)) ∧
-    ∀ n f g, f.1 g = (e n f).1 (Fin.partialProd g)
-
-def PrismStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G]
-  [IsTopologicalGroup G] (M : TRep R G) (X Y : Type u) [TopologicalSpace X] [MulAction G X]
-  [TopologicalSpace Y] [MulAction G Y] (A B : Cx R) eA eB, IsHomog M X A eA → IsHomog M Y B eB →
-  (∀ a : X → Y, Continuous a → (∀ (g : G) x, a (g • x) = g • a x) →
-    ∃ φ : Hom B A, ∀ n F x, (eA n (φ.f n F)).1 x = (eB n F).1 fun i => a (x i)) ∧
-  ∀ (a b : X → Y) (φ ψ : Hom B A), Continuous a → Continuous b → (∀ (g : G) x, a (g • x) = g • a x) →
-    (∀ (g : G) x, b (g • x) = g • b x) → (∀ n F x, (eA n (φ.f n F)).1 x = (eB n F).1 fun i => a (x i)) →
-    (∀ n F x, (eA n (ψ.f n F)).1 x = (eB n F).1 fun i => b (x i)) → ∀ n, φ.H n = ψ.H n
-
 end
 
 end ReciprocityTheory.Coh

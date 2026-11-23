@@ -53,11 +53,6 @@ universe u
 def LESStatement : Prop := ∀ (R : Type u) [CommRing R] (A B C : Cx R) (i : Hom A B) (p : Hom B C), SES i p →
   (∃ δ, IsConn i p δ ∧ LES i p δ) ∧ ∀ δ δ', IsConn i p δ → IsConn i p δ' → δ = δ'
 
-def ConnNatStatement : Prop := ∀ (R : Type u) [CommRing R] (A B C A' B' C' : Cx R) (i : Hom A B) (p : Hom B C)
-  (i' : Hom A' B') (p' : Hom B' C') (α : Hom A A') (β : Hom B B') (γ : Hom C C') δ δ', SES i p → SES i' p' →
-  (∀ n x, β.f n (i.f n x) = i'.f n (α.f n x)) → (∀ n x, γ.f n (p.f n x) = p'.f n (β.f n x)) →
-  IsConn i p δ → IsConn i' p' δ' → ∀ n x, δ' n (γ.H n x) = α.H (n + 1) (δ n x)
-
 def TowerStatement : Prop := ∀ (R : Type u) [CommRing R] (A : ℕ → Cx R) (τ : ∀ m, Hom (A (m + 1)) (A m))
   (L : Cx R) (π : ∀ m, Hom L (A m)), IsTowerLim A τ L π → ∀ n,
   (∀ y : ∀ m, (A m).H n, (∀ m, (τ m).H n (y (m + 1)) = y m) → ∃ x, ∀ m, (π m).H n x = y m) ∧
@@ -79,9 +74,6 @@ def GroupSectionStatement : Prop := ∀ (G : Type u) [Group G] [TopologicalSpace
   [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (U : Subgroup G), IsClosed (U : Set G) →
   ∃ r : G → U, Continuous r ∧ r 1 = 1 ∧ ∀ (x : U) g, r (x * g) = x * r g
 
-def InnerStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M : TRep R G) (P : Pair M M) (s : G),
-  (∀ g, P.φ g = s⁻¹ * g * s) → (∀ m, P.u m = M.rho s m) → ∀ n, P.hom.H n = LinearMap.id
-
 def InfResStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M : TRep R G) (N : Subgroup G) [N.Normal]
   (Q : TRep R (G ⧸ N)) (P : Pair Q M), IsInvRep M N Q P →
   Injective (P.hom.H 1) ∧ Exact (P.hom.H 1) ((Pair.res M N.subtype continuous_subtype_val).hom.H 1) ∧
@@ -97,25 +89,11 @@ def FiveTermStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Grou
   ∃ tg : I →ₗ[R] Q.H 2, (∀ x : I, tg x = 0 ↔
       x.1 ∈ LinearMap.range ((Pair.res M N.subtype continuous_subtype_val).hom.H 1)) ∧ Exact tg (P.hom.H 2)
 
-def CorStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M : TRep R G) (U : Subgroup G) [U.FiniteIndex], IsOpen (U : Set G) →
-  ∃ cor, IsCor M U cor ∧ ∀ n x,
-    cor.H n ((Pair.res M U.subtype continuous_subtype_val).hom.H n x) = U.index • x
-
 def CupStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M N P : TRep R G) (b : Pairing M N P),
   (∀ p q f f' (g : Fin (p + q + 1) → G), dn P.rho (p + q) (cupFun b p q f f') g =
     cupFun b (p + 1) q (dn M.rho p f) f' (fun i => g (i.cast (by omega))) +
       (-1 : R) ^ p • cupFun b p (q + 1) f (dn N.rho q f') g) ∧
   (∃ cup, IsCup b cup) ∧ ∀ cup cup', IsCup b cup → IsCup b cup' → cup = cup'
-
-def CupCorStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M N P : TRep R G) (U : Subgroup G) [U.FiniteIndex] (b : Pairing M N P)
-  (bU : Pairing (M.resSub U) (N.resSub U) (P.resSub U)) cup cupU corM corP, IsOpen (U : Set G) →
-  bU.β = b.β → IsCup b cup → IsCup bU cupU → IsCor M U corM → IsCor P U corP → ∀ p q x y,
-    corP.H (p + q) (cupU p q x ((Pair.res N U.subtype continuous_subtype_val).hom.H q y)) =
-      cup p q (corM.H p x) y
-
-def ShapiroStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] (U : Subgroup G) (M : TRep R U) (C : TRep R G)
-  (ev : Pair C M), IsCoind U M C ev → (∃ r : G → U, Continuous r ∧ ∀ (x : U) g, r (x * g) = x * r g) →
-  ev.hom.QuasiIso
 
 def LimRepStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (A : ℕ → TRep R G) [∀ m, DiscreteTopology (A m).V]
   (τ : ∀ m, Pair (A (m + 1)) (A m)) (L : TRep R G) (π : ∀ m, Pair L (A m)),
@@ -124,11 +102,6 @@ def LimRepStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group 
   Topology.IsEmbedding (fun (x : L.V) m => (π m).u x) →
   (∀ y : ∀ m, (A m).V, (∀ m, (τ m).u (y (m + 1)) = y m) → ∃ x, ∀ m, (π m).u x = y m) →
   IsTowerLim (fun m => (A m).coch) (fun m => (τ m).hom) L.coch fun m => (π m).hom
-
-def FiniteLevelStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
-  (M : TRep R G) [DiscreteTopology M.V] (n : ℕ) (x : M.H n),
-  (∃ (N : Subgroup G) (_ : N.Normal), IsOpen (N : Set G) ∧ ∀ (Q : TRep R (G ⧸ N)) (P : Pair Q M),
-    IsInvRep M N Q P → x ∈ LinearMap.range (P.hom.H n)) ∧ (0 < n → ∃ k : ℕ, 0 < k ∧ k • x = 0)
 
 def ModTStatement : Prop := ∀ (R : Type u) [CommRing R] (A C : Cx R) (i : Hom A A) (p : Hom A C) (t : R) δ,
   (∀ n x, i.f n x = t • x) → SES i p → IsConn i p δ → ∀ n,

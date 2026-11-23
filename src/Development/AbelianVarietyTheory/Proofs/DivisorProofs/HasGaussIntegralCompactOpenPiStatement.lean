@@ -47,6 +47,3 @@ import Mathlib.Topology.Sheaves.Init
 open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
-
-theorem _root_.GlobalTheory.T.hasGaussIntegralCompactOpen_pi : ∀ (Y : Type) [AddCommGroup Y] [TopologicalSpace Y] [MeasurableSpace Y] [BorelSpace Y] (_ : Good Y) (μ : Measure Y) [μ.IsAddHaarMeasure] (ι : Type) [Fintype ι] (f : ι → Y → ℂ) (γ : ι → ℂ), (∀ i, HasGauss μ (f i) (γ i)) → HasGauss (Measure.pi fun _ : ι => μ) (fun x => ∏ i, f i (x i)) (∏ i, γ i) := by
-  first | exact @GlobalTheory.KSp.hasGauss_pi | exact GlobalTheory.KSp.hasGauss_pi | (intros; apply GlobalTheory.KSp.hasGauss_pi <;> assumption)

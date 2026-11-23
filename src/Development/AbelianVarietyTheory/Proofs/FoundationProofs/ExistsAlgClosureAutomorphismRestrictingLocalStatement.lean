@@ -49,6 +49,3 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 
 open scoped MatrixGroups
 open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
-
-theorem _root_.GlobalTheory.T.exists_algClosure_automorphism_restricting_local : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, (∀ x, x ∈ A ↔ IsInt (p := p) (j x)) → ∀ g : Gal p Ωl, ∃ s : Ω ≃ₐ[ℚ] Ω, Stab A s ∧ ∀ x, g (j x) = j (s x) := by
-  first | exact @GlobalTheory.CuspDown.exists_restrict | exact GlobalTheory.CuspDown.exists_restrict | (intros; apply GlobalTheory.CuspDown.exists_restrict <;> assumption)

@@ -99,7 +99,6 @@ theorem UpperTheory.One.Join.cm_abelian_inputs_from_literature (O : _root_.Upper
       FubiniStudyChowHeightFormula₂.Adr.crystallineDeRham⟩
     per := (GlobalTheory.PeriodFamily.periodComparison_holds)
     gmp := (GlobalTheory.GaussManinTop.main)
-    st := (UpperTheory.Lit.serreTateGoodReduction)
     cm := (_root_.UpperTheory.LiteratureTheorems.elliptic_main_theorem_cm_of_open O)
     hj := (_root_.UpperTheory.LiteratureTheorems.hilbert_class_field_j_of_open O)
     dri := (_root_.UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_open O)

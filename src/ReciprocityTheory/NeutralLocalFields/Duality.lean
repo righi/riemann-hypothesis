@@ -348,10 +348,6 @@ def charRep (χ : Γ →* Rˣ) : Representation R Γ R where
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [mul_comm]
 
-@[simp] theorem charRep_apply (χ : Γ →* Rˣ) (g : Γ) (x : R) :
-    charRep χ g x = ((χ g : Rˣ) : R) * x := rfl
-
-
 end Coeff
 
 section Cup
@@ -388,18 +384,6 @@ def cycN : (L ≃ₐ[K] L) →* (ZMod n)ˣ :=
   (modularCyclotomicCharacter L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)).comp
     (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L)
 
-
-variable {K L n} in
-theorem cycN_spec (σ : L ≃ₐ[K] L) (ζ : L) (h : ζ ^ n = 1) :
-    σ ζ = ζ ^ ((cycN K L n σ : ZMod n)).val := by
-  have hz : ζ ≠ 0 := by
-    rintro rfl
-    simp [NeZero.ne n] at h
-  have ht : Units.mk0 ζ hz ∈ rootsOfUnity n L := by
-    rw [mem_rootsOfUnity]; ext; simp [h]
-  have := modularCyclotomicCharacter.spec L (HasEnoughRootsOfUnity.natCard_rootsOfUnity L n)
-    (MulSemiringAction.toRingAut (L ≃ₐ[K] L) L σ) ht
-  simpa [cycN] using this
 
 end Cyc
 

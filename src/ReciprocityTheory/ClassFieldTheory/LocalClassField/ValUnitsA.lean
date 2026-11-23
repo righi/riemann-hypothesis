@@ -85,11 +85,6 @@ def vKHom : Kˣ →* Multiplicative ℤ where
 
 theorem vKHom_apply (x : Kˣ) : vKHom p K x = Multiplicative.ofAdd (vK p K x) := rfl
 
-theorem vK_inv (x : Kˣ) : vK p K x⁻¹ = - vK p K x := by
-  have h := vK_mul p K x⁻¹ x
-  rw [inv_mul_cancel, vK_one] at h
-  omega
-
 theorem vK_zpow (x : Kˣ) (n : ℤ) : vK p K (x ^ n) = n * vK p K x := by
   have h := map_zpow (vKHom p K) x n
   rw [vKHom_apply, vKHom_apply, ← ofAdd_zsmul] at h

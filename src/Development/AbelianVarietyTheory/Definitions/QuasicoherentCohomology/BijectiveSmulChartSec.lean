@@ -311,8 +311,6 @@ instance secAddCommGroup : AddCommGroup (LB.Sec L) :=
 
 @[simp] theorem neg_f (s : LB.Sec L) (i : L.ι) : (-s).f i = - s.f i := rfl
 
-@[simp] theorem sub_f (s t : LB.Sec L) (i : L.ι) : (s - t).f i = s.f i - t.f i := rfl
-
 @[simp] theorem smul_f (a : Γ(X, ⊤)) (s : LB.Sec L) (i : L.ι) :
     (a • s).f i = resG X le_top a * s.f i := rfl
 

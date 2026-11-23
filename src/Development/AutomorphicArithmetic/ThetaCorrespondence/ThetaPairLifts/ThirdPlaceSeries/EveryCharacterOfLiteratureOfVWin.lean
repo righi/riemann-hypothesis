@@ -451,8 +451,6 @@ theorem UpperTheory.LiteratureTheorems.k_finite_vectors_unitary_of_literature (O
   GlobalTheory.KFinLinkPort.kFiniteVectors_irreducibleUnitary_unitaryGroupPQ
 theorem UpperTheory.LiteratureTheorems.kawamata_viehweg_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.KawamataViehweg :=
   GlobalTheory.KVFromPair.kawamataViehweg_of_nadelVanishingPair (GlobalTheory.nefNumerics_outright) (And.left (NadelVanishingSeparation.NSI.nadelVanishingAndNonKltDivisor))
-theorem UpperTheory.LiteratureTheorems.kudla_splitting_split_unitary_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.KudlaSplittingSplitUnitary :=
-  GlobalTheory.kudlaSplittingSplitUnitary
 theorem UpperTheory.LiteratureTheorems.l2_extension_log_canonical_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.L2ExtensionLogCanonical :=
   GlobalTheory.l2ExtensionLogCanonical'
 theorem UpperTheory.LiteratureTheorems.landherr_st_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.LandherrSt :=
@@ -777,7 +775,6 @@ theorem UpperTheory.LiteratureTheorems.published_results_first (O : _root_.Upper
     realMetaplecticRepresentation := (_root_.UpperTheory.LiteratureTheorems.real_metaplectic_representation_of_literature O),
     cuspDecayBound := (_root_.UpperTheory.LiteratureTheorems.cusp_decay_bound_of_literature O),
     gLHoweDuality := (_root_.UpperTheory.LiteratureTheorems.gl_howe_duality_of_literature O),
-    kudlaSplittingSplitUnitary := (_root_.UpperTheory.LiteratureTheorems.kudla_splitting_split_unitary_of_literature O),
     metaplecticRepresentation := (_root_.UpperTheory.LiteratureTheorems.metaplectic_representation_of_literature O),
     harishChandraModules := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_modules_of_literature O),
     discreteSeriesCover := (_root_.UpperTheory.LiteratureTheorems.discrete_series_cover_of_literature O),

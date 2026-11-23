@@ -290,31 +290,6 @@ def h2EquivOfOrderTwo : M.H 2 ≃ₗ[R] H2 M.rho :=
 
 variable {G' : Type u} [Group G'] [TopologicalSpace G'] [IsTopologicalGroup G'] {M' : TRep R G'}
 
-theorem h1Equiv_pair (P : Pair M M') (x : M.H 1) :
-    h1EquivOfOrderTwo M' (P.hom.H 1 x) =
-      pairH1DecompositionMap M.rho M'.rho P.φ P.φ_cont P.u P.u_cont P.equiv (h1EquivOfOrderTwo M x) := by
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  have key : (oneCocyclesEquivFunctions M' (P.hom.Z 1 z) : Z1 M'.rho) =
-      compatiblePairCocycles1 M.rho M'.rho P.φ P.φ_cont P.u P.u_cont P.equiv (oneCocyclesEquivFunctions M z) := by
-    refine Subtype.ext (funext fun g => ?_)
-    have hv : (fun i : Fin 1 => P.φ (![g] i)) = ![P.φ g] := by funext i; fin_cases i; rfl
-    show P.u (z.1.1 fun i => P.φ (![g] i)) = P.u (z.1.1 ![P.φ g])
-    rw [hv]
-  exact congrArg Submodule.Quotient.mk key
-
-theorem h2Equiv_pair (P : Pair M M') (x : M.H 2) :
-    h2EquivOfOrderTwo M' (P.hom.H 2 x) =
-      compatiblePairH2 M.rho M'.rho P.φ P.φ_cont P.u P.u_cont P.equiv (h2EquivOfOrderTwo M x) := by
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  have key : (twoCocyclesEquivFunctions M' (P.hom.Z 2 z) : Z2 M'.rho) =
-      compatiblePairCocycles2 M.rho M'.rho P.φ P.φ_cont P.u P.u_cont P.equiv (twoCocyclesEquivFunctions M z) := by
-    refine Subtype.ext (funext fun p => ?_)
-    have hv : (fun i : Fin 2 => P.φ (![p.1, p.2] i)) = ![P.φ p.1, P.φ p.2] := by
-      funext i; fin_cases i <;> rfl
-    show P.u (z.1.1 fun i => P.φ (![p.1, p.2] i)) = P.u (z.1.1 ![P.φ p.1, P.φ p.2])
-    rw [hv]
-  exact congrArg Submodule.Quotient.mk key
-
 end LowDeg
 
 end

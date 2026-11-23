@@ -58,12 +58,7 @@ structure Model (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] (p : 
 
 variable {K : Type} [Field K] [ValuativeRel K] [TopologicalSpace K] {p : ℕ} [Fact p.Prime]
 
-def Model.IsGalIso (m : Model K p) (φ : (AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K) ≃* GK p m.K') : Prop :=
-  ∀ σ x, φ σ (m.E x) = m.E (σ x)
-
 def Model.Corr (m : Model K p) (L : IntermediateField K (AlgebraicClosure K))
     (L' : IntermediateField ℚ_[p] (PadicAlgCl p)) : Prop := ∀ x, m.E x ∈ L' ↔ x ∈ L
-
-noncomputable def Model.eU (m : Model K p) : Kˣ ≃* (m.K')ˣ := Units.mapEquiv m.e.toMulEquiv
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField

@@ -117,71 +117,12 @@ def levi (hc : ∀ z, c (c z) = z) (a : GL ν E) : UG c (stdJ ν E) :=
     rw [← transpose_mul, ← Matrix.map_mul (f := c), Units.mul_inv,
       Matrix.map_one _ (map_zero c) (map_one c), transpose_one]⟩
 
-theorem levi_val (hc : ∀ z, c (c z) = z) (a : GL ν E) :
-    ((levi c hc a : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E) =
-      fromBlocks (a : Matrix ν ν E) 0 0 (((a⁻¹ : GL ν E) : Matrix ν ν E).map c)ᵀ := rfl
-
 def form (Q : Matrix α α E) (w w' : Matrix α (ν ⊕ ν) E) : F :=
   2⁻¹ * Algebra.trace F E (hTens c Q (stdJ ν E) w w')
 
 def heisFun (ψ : AddChar F ℂ) (Q : Matrix α α E) (w : Matrix α (ν ⊕ ν) E) (φ : Matrix α ν E → ℂ) : Matrix α ν E → ℂ :=
   fun x => ψ (form c Q (fromCols x 0) (fromCols 0 w.toCols₂) +
     2⁻¹ * form c Q (fromCols w.toCols₁ 0) (fromCols 0 w.toCols₂)) * φ (x + w.toCols₁)
-
-omit [DecidableEq α] in
-theorem hTens_eq (Q : Matrix α α E) (w w' : Matrix α (ν ⊕ ν) E) :
-    hTens c Q (stdJ ν E) w w' = ∑ i, ∑ k, Q i k * (w * stdJ ν E * (w'.map c)ᵀ) i k := by
-  simp only [hTens, Matrix.mul_apply, transpose_apply, map_apply, Finset.sum_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => by ring
-
-
-omit [DecidableEq α] in
-theorem form_mul (Q : Matrix α α E) (g : UG c (stdJ ν E)) (w w' : Matrix α (ν ⊕ ν) E) :
-    form c Q (w * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) (w' * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) =
-      form c Q w w' := by
-  have h := (mem_UG_iff c _).mp g.2
-  rw [form, form, hTens_eq, hTens_eq, Matrix.map_mul (f := c), transpose_mul]
-  conv_rhs => rw [← h]
-  simp only [Matrix.mul_assoc]
-
-omit [DecidableEq α] in
-theorem form_add_left (Q : Matrix α α E) (w₁ w₂ w' : Matrix α (ν ⊕ ν) E) :
-    form c Q (w₁ + w₂) w' = form c Q w₁ w' + form c Q w₂ w' := by
-  simp only [form, hTens, Matrix.add_apply, add_mul, Finset.sum_add_distrib, map_add (f := _), mul_add]
-
-omit [DecidableEq α] in
-theorem form_add_right (Q : Matrix α α E) (w w₁ w₂ : Matrix α (ν ⊕ ν) E) :
-    form c Q w (w₁ + w₂) = form c Q w w₁ + form c Q w w₂ := by
-  simp only [form, hTens, Matrix.add_apply, Finset.sum_add_distrib, map_add (f := _), mul_add]
-
-theorem form_swap (hc : ∀ z, c (c z) = z) {Q : Matrix α α E} (hQ : IsHerm c Q) (w w' : Matrix α (ν ⊕ ν) E) :
-    form c Q w' w = -form c Q w w' := by
-  have hJ : ∀ j l, c (stdJ ν E j l) = -stdJ ν E l j := by
-    rintro (j | j) (l | l) <;> by_cases h : j = l <;> simp [stdJ, one_apply, h, eq_comm, map_one, map_zero]
-  have h : hTens c Q (stdJ ν E) w' w = -c (hTens c Q (stdJ ν E) w w') := by
-
-    simp only [hTens, map_sum, map_mul, hc, hJ, hQ.1, ← Finset.sum_neg_distrib]
-    simp only [← Finset.sum_product', Finset.univ_product_univ]
-    exact Fintype.sum_equiv ⟨fun p => (p.2.2.1, p.2.2.2, p.1, p.2.1), fun p => (p.2.2.1, p.2.2.2, p.1, p.2.1),
-      fun _ => rfl, fun _ => rfl⟩ _ _ fun p => by simp only [Equiv.coe_fn_mk]; ring
-  have ht : ∀ z, Algebra.trace F E (c z) = Algebra.trace F E z := fun z =>
-    Algebra.trace_eq_of_algEquiv (AlgEquiv.ofAlgHom c c (AlgHom.ext hc) (AlgHom.ext hc)) z
-  rw [form, form, h, map_neg, ht, mul_neg]
-
-
-omit [DecidableEq α] in
-theorem form_left_left (Q : Matrix α α E) (x x' : Matrix α ν E) : form c Q (fromCols x 0) (fromCols x' 0) = 0 := by
-  simp [form, hTens, stdJ, Fintype.sum_sum_type]
-
-
-omit [DecidableEq α] in
-theorem form_right_right (Q : Matrix α α E) (y y' : Matrix α ν E) : form c Q (fromCols 0 y) (fromCols 0 y') = 0 := by
-  simp [form, hTens, stdJ, Fintype.sum_sum_type]
-
 
 end Group
 

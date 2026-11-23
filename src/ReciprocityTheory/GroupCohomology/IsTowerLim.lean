@@ -103,8 +103,6 @@ def Hom.H (φ : Hom A B) (n : ℕ) : A.H n →ₗ[R] B.H n :=
       show B.d n (φ.f n y) = φ.f (n + 1) x.1
       rw [← φ.comm, hy]; rfl
 
-def Hom.QuasiIso (φ : Hom A B) : Prop := ∀ n, Function.Bijective (φ.H n)
-
 structure SES (i : Hom A B) (p : Hom B C) : Prop where
   inj : ∀ n, Function.Injective (i.f n)
   exact : ∀ n, Function.Exact (i.f n) (p.f n)

@@ -170,9 +170,4 @@ theorem of_section {k : Type u} [Field k] {X : Scheme.{u}} (f : X ⟶ Spec (.of 
   have := of_isAlgClosed (pullback.snd f y)
   exact of_isPullback h
 
-theorem geometricallyConnected_of_ratPoint :
-    ∀ (k : Type) [Field k] (X : Over (Sp k)), LocallyOfFiniteType X.hom → QuasiCompact X.hom → ConnectedSpace X.left → Nonempty (𝟙_ (Over (Sp k)) ⟶ X) → GeometricallyConnected X.hom := by
-  rintro k _ X _ - _ ⟨s⟩
-  exact of_section (k := k) X.hom s.left (Over.w s)
-
 end GlobalTheory.RatPointConn
